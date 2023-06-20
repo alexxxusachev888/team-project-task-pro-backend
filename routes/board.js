@@ -13,6 +13,7 @@ router.use(authenticate);
 
 router.post('/', validateBoardColumnTask(boardSchema), createBoard);
 router.patch('/:id', validateBoardColumnTask(boardSchema), updateBoard);
+router.patch('/:boardId/icon-background', authenticate, updateBoardIconBackground);
 router.delete('/:id', deleteBoard);
 
 router.post('/:boardId/columns', validateBoardColumnTask(columnSchema), createColumn);
@@ -23,6 +24,6 @@ router.post('/:boardId/columns/:columnId/tasks', validateBoardColumnTask(taskSch
 router.patch('/:boardId/columns/:columnId/tasks/:id', validateBoardColumnTask(taskSchema), updateTask);
 router.delete('/:boardId/columns/:columnId/tasks/:id', deleteTask);
 router.get('/:boardId/tasks/filter/:priority', filterTasksByPriority);
-router.patch('/:boardId/icon-background', authenticate, updateBoardIconBackground);
+
 
 module.exports = router;
