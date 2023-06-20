@@ -2,11 +2,12 @@ const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 const { handleMongooseError } = require('../helpers');
 
-const userSchema = new Schema({
+const userSchema = new Schema(
+  {
     name: {
       type: String,
       required: [true, 'Please set a name for the user'],
-      },
+    },
     email: {
       type: String,
       required: [true, 'Please set an email for the user.'],
@@ -27,16 +28,23 @@ const userSchema = new Schema({
       type: String,
     },
     token: String,
-  }, {versionKey: false, timestamps: true});
+    theme: {
+      type: String,
+      enum: ['Light', 'Violet', 'Dark'],
+      default: 'Light',
+    },
+  },
+  { versionKey: false, timestamps: true }
+);
 
 const User = model('user', userSchema);
 userSchema.post('save', handleMongooseError);
 
 const errorMessages = (label) => ({
-    'string.base': `"${label}" should be a type of 'text'`,
-    'string.empty': `"${label}" cannot be an empty field`,
-    'any.required': `"${label}" is a required field`
-  });  
+  'string.base': `"${label}" should be a type of 'text'`,
+  'string.empty': `"${label}" cannot be an empty field`,
+  'any.required': `"${label}" is a required field`,
+});
 
 const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
@@ -53,6 +61,9 @@ const updateSchema = Joi.object({
   name: Joi.string().min(2).max(100).messages(errorMessages('name')),
   email: Joi.string().email().messages(errorMessages('email')),
   password: Joi.string().min(8).max(50).messages(errorMessages('password')),
+  theme: Joi.any()
+    .valid('Light', 'Violet', 'Dark')
+    .messages(errorMessages('theme')),
 }).options({ abortEarly: false });
 
 /* const userEmailSchema = Joi.object({
@@ -60,13 +71,13 @@ const updateSchema = Joi.object({
 }).options({ abortEarly: false }); */
 
 const schemas = {
-    registerSchema,
-    loginSchema,
-    updateSchema,
+  registerSchema,
+  loginSchema,
+  updateSchema,
   /*   userEmailSchema */
-}
-  
+};
+
 module.exports = {
-    User,
-    schemas
+  User,
+  schemas,
 };
