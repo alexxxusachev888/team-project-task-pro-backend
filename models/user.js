@@ -30,6 +30,13 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
+  verify: {
+    type: Boolean,
+    default: false,
+  },
+  verificationCode: {
+    type: String,
+  },
   boards: [boardSchema]
 }, {versionKey: false, timestamps: true});
 

@@ -38,7 +38,7 @@ const register = async (req, res) => {
   const emailData = {
     to: email,
     subject: "Please verify your email",
-    html: `<a href="${process.env.PROJECT_URL}/users/verify/${verificationCode}">Please verify your email</a>`,
+    html: `<a href="${process.env.PROJECT_URL}/api/users/verify/${verificationCode}">Please verify your email</a>`,
   };
 
   await sendEmail(emailData);
