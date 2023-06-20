@@ -49,6 +49,7 @@ const register = async (req, res) => {
   await sendEmail(emailData);
 
   res.json({
+    token,
     user: {
       email: newUser.email,
     },
