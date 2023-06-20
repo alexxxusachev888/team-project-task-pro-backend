@@ -26,6 +26,10 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
+  token: {
+    type: String,
+    default: '',
+  },
   boards: [boardSchema]
 }, {versionKey: false, timestamps: true});
 

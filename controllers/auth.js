@@ -24,10 +24,6 @@ const register = async (req, res) => {
     throw handleHttpError(409, "Email is already in use");
   }
 
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: "12h",
-  });
-
   const verificationCode = nanoid();
   const hashedPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: "68" }, true);
@@ -37,7 +33,6 @@ const register = async (req, res) => {
     password: hashedPassword,
     avatarURL,
     verificationCode,
-    token
   });
 
   const emailData = {
