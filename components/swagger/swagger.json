@@ -5,7 +5,6 @@
     "description": "Tasks managing API",
     "version": "1.0.0"
   },
-  "components": ["aplication/json"],
   "produces": ["application/json"],
 
   "servers": [
@@ -48,13 +47,20 @@
           "description": "Body description:\n\n 'username'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Successful response"
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request"
@@ -113,6 +119,87 @@
             "description": "Bad request"
           }
         }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user",
+        "parametres": [],
+        "requestBody": {
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true,
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationRequest"
+            }
+          }
+        },
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "201": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["email", "password"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "userId": {
+              "type": "number",
+              "description": "User's id",
+              "example": "32143232436545474"
+            }
+          }
+        },
+        "example": [
+          { "email": "1@gmail.com", "userId": "1" },
+          { "email": "2@gmail.com", "userId": "2" }
+        ]
+      }
+    },
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   }
