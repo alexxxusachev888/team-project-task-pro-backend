@@ -17,14 +17,12 @@ cloudinary.config({
 
 const register = async (req, res) => {
   const { email, password } = req.body;
+  const userExists = await User.findOne({ email });
 
-  const isUserExists = await User.findOne({ email });
-
-  if (isUserExists) {
+  if (userExists) {
     throw handleHttpError(409, "Email is already in use");
   }
 
-  const verificationCode = nanoid();
   const hashedPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: "68" }, true);
 
@@ -32,16 +30,7 @@ const register = async (req, res) => {
     ...req.body,
     password: hashedPassword,
     avatarURL,
-    verificationCode,
   });
-
-  const emailData = {
-    to: email,
-    subject: "Please verify your email",
-    html: `<a href="${process.env.PROJECT_URL}/api/users/verify/${verificationCode}">Please verify your email</a>`,
-  };
-
-  await sendEmail(emailData);
 
   res.json({
     user: {
@@ -52,21 +41,14 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await User.findOne({ email });
 
-  if (!user || !user.verify) {
-    throw handleHttpError(401, "Email or password is wrong");
-  }
+  const user = await User.findOne({ email });
+  if (!user) throw handleHttpError(401, "Email or password is wrong");
 
   const comparePassword = await bcrypt.compare(password, user.password);
-
-  if (!comparePassword) {
-    throw handleHttpError(401, "Email or password is wrong");
-  }
-
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-    expiresIn: "12h",
-  });
+  if (!comparePassword) throw handleHttpError(401, "Email or password is wrong");
+  
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "12h" });
   await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
@@ -79,12 +61,15 @@ const login = async (req, res) => {
 
 const getCurrentUser = async (req, res) => {
   const { _id, name, email, avatarURL } = req.user;
+
   res.json({ id: _id, name, email, avatarURL });
 };
 
 const logout = async (req, res) => {
   const { _id } = req.user;
+
   await User.findByIdAndUpdate(_id, { token: "" });
+
   res.status(204).end();
 };
 

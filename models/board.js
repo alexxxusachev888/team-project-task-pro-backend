@@ -25,7 +25,7 @@ const taskSchema = new Schema({
 const taskSchemaJoi = Joi.object({
     title: Joi.string().min(2).max(100).required().messages(errorMessages('title')),
     task: Joi.string().min(2).max(500).required().messages(errorMessages('task')),
-    priority: Joi.string().valid('without priority', 'low', 'medium', 'high').required().messages(errorMessages('priority')),
+    priority: Joi.string().valid('showAll','withoutPriority', 'low', 'medium', 'high').required().messages(errorMessages('priority')),
     deadline: Joi.date().iso().required().messages(errorMessages('deadline')),
     status: Joi.string().valid('in progress', 'done').required().messages(errorMessages('status')),
   }).options({ abortEarly: false });

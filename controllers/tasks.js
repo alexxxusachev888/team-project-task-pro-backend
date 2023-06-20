@@ -21,6 +21,10 @@ const filterTasksByPriority = async (req, res) => {
       board.columns.forEach(column => {
           column.tasks.sort((a, b) => {
               switch (priority) {
+                /*   case 'showAll':
+                      return a.priority === 'showAll' && b.priority !== 'showAll' ? -1 : 1; */
+                  case 'withoutPriority':
+                      return a.priority === 'withoutPriority' && b.priority !== 'withoutPriority' ? -1 : 1;
                   case 'low':
                       return a.priority === 'low' && b.priority !== 'low' ? -1 : 1;
                   case 'medium':

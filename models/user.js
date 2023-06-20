@@ -2,7 +2,6 @@ const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 const { handleMongooseError } = require('../helpers');
 const { errorMessages } = require('../helpers');
-const { boardSchema } = require('./board');
 
 const userSchema = new Schema({
   name: {
@@ -30,14 +29,6 @@ const userSchema = new Schema({
     type: String,
     default: '',
   },
-  verify: {
-    type: Boolean,
-    default: false,
-  },
-  verificationCode: {
-    type: String,
-  },
-  boards: [boardSchema]
 }, {versionKey: false, timestamps: true});
 
 const User = model('user', userSchema);
@@ -76,5 +67,4 @@ const schemas = {
 module.exports = {
   User,
   schemas,
-  errorMessages,
 };
