@@ -1,0 +1,1 @@
+router.get('/tasks/filter/:priority', filterTasksByPriority);

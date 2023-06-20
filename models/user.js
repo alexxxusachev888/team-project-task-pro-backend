@@ -1,42 +1,36 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 const { handleMongooseError } = require('../helpers');
+const { errorMessages } = require('../helpers');
+const { boardSchema } = require('./board');
 
 const userSchema = new Schema({
-    name: {
-      type: String,
-      required: [true, 'Please set a name for the user'],
-      },
-    email: {
-      type: String,
-      required: [true, 'Please set an email for the user.'],
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: [true, 'Please set a password for the user'],
-    },
-    avatarURL: {
-      type: String,
-    },
-    verify: {
-      type: Boolean,
-      default: false,
-    },
-    verificationCode: {
-      type: String,
-    },
-    token: String,
-  }, {versionKey: false, timestamps: true});
+  name: {
+    type: String,
+    required: [true, 'Please set a name for the user'],
+  },
+  email: {
+    type: String,
+    required: [true, 'Please set an email for the user.'],
+    unique: true,
+  },
+  password: {
+    type: String,
+    required: [true, 'Please set a password for the user'],
+  },
+  theme: {
+    type: String,
+    default: 'light',
+  },
+  avatarURL: {
+    type: String,
+    default: '',
+  },
+  boards: [boardSchema]
+}, {versionKey: false, timestamps: true});
 
 const User = model('user', userSchema);
 userSchema.post('save', handleMongooseError);
-
-const errorMessages = (label) => ({
-    'string.base': `"${label}" should be a type of 'text'`,
-    'string.empty': `"${label}" cannot be an empty field`,
-    'any.required': `"${label}" is a required field`
-  });  
 
 const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
@@ -53,20 +47,23 @@ const updateSchema = Joi.object({
   name: Joi.string().min(2).max(100).messages(errorMessages('name')),
   email: Joi.string().email().messages(errorMessages('email')),
   password: Joi.string().min(8).max(50).messages(errorMessages('password')),
+  theme: Joi.string().valid('light', 'dark', 'violet').messages(errorMessages('theme')),
+  avatarURL: Joi.string().uri().optional().messages(errorMessages('avatarURL')),
 }).options({ abortEarly: false });
 
-/* const userEmailSchema = Joi.object({
-  email: Joi.string().required().messages(errorMessages('email')),
-}).options({ abortEarly: false }); */
+const themeUpdateSchema = Joi.object({
+  theme: Joi.string().valid('light', 'dark', 'violet').required().messages(errorMessages('theme')),
+}).options({ abortEarly: false });
 
 const schemas = {
-    registerSchema,
-    loginSchema,
-    updateSchema,
-  /*   userEmailSchema */
+  registerSchema,
+  loginSchema,
+  updateSchema,
+  themeUpdateSchema
 }
-  
+
 module.exports = {
-    User,
-    schemas
+  User,
+  schemas,
+  errorMessages,
 };

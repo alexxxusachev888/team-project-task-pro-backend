@@ -1,7 +1,6 @@
 const { User } = require("../models/user");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const path = require("path");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 const gravatar = require("gravatar");
@@ -25,6 +24,10 @@ const register = async (req, res) => {
     throw handleHttpError(409, "Email is already in use");
   }
 
+  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+    expiresIn: "12h",
+  });
+
   const verificationCode = nanoid();
   const hashedPassword = await bcrypt.hash(password, 10);
   const avatarURL = gravatar.url(email, { s: "68" }, true);
@@ -34,6 +37,7 @@ const register = async (req, res) => {
     password: hashedPassword,
     avatarURL,
     verificationCode,
+    token
   });
 
   const emailData = {
@@ -78,6 +82,17 @@ const login = async (req, res) => {
   });
 };
 
+const getCurrentUser = async (req, res) => {
+  const { _id, name, email, avatarURL } = req.user;
+  res.json({ id: _id, name, email, avatarURL });
+};
+
+const logout = async (req, res) => {
+  const { _id } = req.user;
+  await User.findByIdAndUpdate(_id, { token: "" });
+  res.status(204).end();
+};
+
 const update = async (req, res) => {
   const { _id } = req.user;
   const updates = req.body;
@@ -85,10 +100,18 @@ const update = async (req, res) => {
   res.json(user);
 };
 
-const logout = async (req, res) => {
-  const { _id } = req.user;
-  await User.findByIdAndUpdate(_id, { token: "" });
-  res.status(204).end();
+const updateTheme = async (req, res, next) => {
+    const { theme } = req.body;
+    const { _id } = req.user;
+
+    const user = await User.findById(_id);
+
+    if (!user) {
+      return next(new Error("User not found"));
+    }
+
+    await User.findByIdAndUpdate(_id, { theme });
+    res.json({ theme });
 };
 
 const avatarUpdate = async (req, res) => {
@@ -110,7 +133,6 @@ const avatarUpdate = async (req, res) => {
 
   res.status(200).json({ avatarURL });
 };
-
 
 const verify = async (req, res) => {
   const { verificationCode } = req.params;
@@ -155,8 +177,7 @@ const resendVerificationEmail = async (req, res) => {
   });
 };
 
-
-/* const refreshToken = async (req, res) => {
+const refreshToken = async (req, res) => {
   const { _id } = req.user;
 
   const newToken = jwt.sign({ id: _id }, process.env.JWT_SECRET, {
@@ -165,7 +186,7 @@ const resendVerificationEmail = async (req, res) => {
   await User.findByIdAndUpdate(_id, { token: newToken });
 
   res.json({ token: newToken });
-}; */
+};
 
 module.exports = {
   register: ctrlWrapper(register),
@@ -175,5 +196,7 @@ module.exports = {
   update: ctrlWrapper(update),
   avatarUpdate: ctrlWrapper(avatarUpdate),
   resendVerificationEmail: ctrlWrapper(resendVerificationEmail),
-/*   refreshToken: ctrlWrapper(refreshToken), */
+  getCurrentUser: ctrlWrapper(getCurrentUser),
+  updateTheme: ctrlWrapper(updateTheme),
+  refreshToken: ctrlWrapper(refreshToken),
 };
