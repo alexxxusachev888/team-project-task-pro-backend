@@ -3,6 +3,7 @@
   "info": {
     "title": "Task-Pro API",
     "description": "Tasks managing API",
+
     "version": "1.0.0"
   },
   "produces": ["application/json"],
@@ -53,7 +54,8 @@
         },
         "responses": {
           "201": {
-            "description": "Successful response",
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
             "content": {
               "application/json": {
                 "schema": {
@@ -63,7 +65,24 @@
             }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorConflictResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -78,16 +97,36 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": {}
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Successful response"
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInDto"
+                }
+              }
+            }
           },
           "400": {
-            "description": "Bad request"
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \n\n Email or password is wrong"
           }
         }
       }
@@ -112,11 +151,12 @@
           }
         },
         "responses": {
-          "201": {
+          "204": {
             "description": "Successful response"
           },
-          "400": {
-            "description": "Bad request"
+
+          "401": {
+            "description": "Unauthorized"
           }
         }
       }
@@ -158,8 +198,13 @@
     "schemas": {
       "RegistrationRequest": {
         "type": "object",
-        "required": ["email", "password"],
+        "required": ["name", "email", "password"],
         "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
           "email": {
             "type": "string",
             "description": "User's email",
@@ -177,23 +222,103 @@
         "items": {
           "type": "object",
           "properties": {
+            "name": {
+              "type": "string",
+              "description": "User's name",
+              "example": "User"
+            },
             "email": {
               "type": "string",
               "description": "User's email",
               "format": "email"
             },
-            "userId": {
-              "type": "number",
-              "description": "User's id",
-              "example": "32143232436545474"
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
             }
+          },
+          "required": ["name", "email", "password"]
+        },
+        "example": [{ "name": "User2", "email": "2@gmail.com", "userId": "2" }]
+      },
+      "SignInDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "User@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "User"
           }
         },
-        "example": [
-          { "email": "1@gmail.com", "userId": "1" },
-          { "email": "2@gmail.com", "userId": "2" }
-        ]
-      }
+        "required": ["email", "password"]
+      },
+
+      "errorBadRequestResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Bad request."
+          }
+        }
+      },
+
+      "errorUnauthorizedResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "401"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not authorized"
+          }
+        }
+      },
+      "errorNotFoundResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "404"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not found"
+          }
+        }
+      },
+      "errorConflictResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "409"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "User with email - user@example.com, already exist."
+          }
+        }
+      },
+      "errorUnauthorized": {}
     },
     "securitySchemes": {
       "Bearer": {

@@ -1,16 +1,16 @@
-const { User } = require("../models/user");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const fs = require("fs/promises");
-const Jimp = require("jimp");
-const gravatar = require("gravatar");
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const fs = require('fs/promises');
+const Jimp = require('jimp');
+const gravatar = require('gravatar');
 const cloudinary = require('cloudinary').v2;
-const { ctrlWrapper, handleHttpError } = require("../helpers");
+const { ctrlWrapper, handleHttpError } = require('../helpers');
+const { User } = require('../models/user');
 
-cloudinary.config({ 
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
-  api_key: process.env.CLOUDINARY_API_KEY, 
-  api_secret: process.env.CLOUDINARY_API_KEY_SECRET 
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_KEY_SECRET,
 });
 
 const register = async (req, res) => {
@@ -18,22 +18,26 @@ const register = async (req, res) => {
   const userExists = await User.findOne({ email });
 
   if (userExists) {
-    throw handleHttpError(409, "Email is already in use");
+    throw handleHttpError(409, 'Email is already in use');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email, { s: "68" }, true);
+  const avatarURL = gravatar.url(email, { s: '68' }, true);
 
-  const newUser = await User.create({
-    ...req.body,
-    password: hashedPassword,
-    avatarURL,
+  await User.create({ ...req.body, password: hashedPassword, avatarURL });
+
+  const user = await User.findOne({ email });
+  const jwtPayload = { id: user._id };
+  const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+    expiresIn: '24h',
   });
+  await User.findByIdAndUpdate(user._id, { token });
 
-  res.json({
-    user: {
-      email: newUser.email,
-    },
+  res.status(201).json({
+    name: user.name,
+    email: user.email,
+    avatarURL,
+    token,
   });
 };
 
@@ -41,19 +45,22 @@ const login = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw handleHttpError(401, "Email or password is wrong");
+  if (!user) throw handleHttpError(401, 'Email or password is wrong');
 
   const comparePassword = await bcrypt.compare(password, user.password);
-  if (!comparePassword) throw handleHttpError(401, "Email or password is wrong");
-  
-  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: "12h" });
+  if (!comparePassword)
+    throw handleHttpError(401, 'Email or password is wrong');
+
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+    expiresIn: '24h',
+  });
   await User.findByIdAndUpdate(user._id, { token });
 
   res.json({
+    name: user.name,
+    email: user.email,
+    avatarURL: user.avatarURL,
     token,
-    user: {
-      email: user.email,
-    },
   });
 };
 
@@ -66,7 +73,7 @@ const getCurrentUser = async (req, res) => {
 const logout = async (req, res) => {
   const { _id } = req.user;
 
-  await User.findByIdAndUpdate(_id, { token: "" });
+  await User.findByIdAndUpdate(_id, { token: '' });
 
   res.status(204).end();
 };
