@@ -339,6 +339,7 @@
         }
       },
       "errorUnauthorized": {},
+
       "currentResponse": {
         "type": "object",
         "required": ["name", "email", "password"],
@@ -358,13 +359,17 @@
             "description": "User's img",
             "format": "URL"
           },
-          "token": {
+
+          "theme": {
             "type": "string",
-            "description": "User's token"
+            "description": "User's theme",
+            "enum": ["light", "dark", "Violet"],
+            "example": "light"
           }
         }
       }
     },
+
     "securitySchemes": {
       "Bearer": {
         "type": "http",
