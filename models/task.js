@@ -24,9 +24,9 @@ const taskSchema = new Schema(
       min: Date.now(),
       //   default: Date.now(),
     },
-    board: {
+    column: {
       type: Schema.Types.ObjectId,
-      ref: "board",
+      ref: "column",
       required: true,
     },
   },
@@ -41,7 +41,7 @@ const taskSchemaJoi = Joi.object({
   description: Joi.string().required(),
   priority: Joi.string().valid("Low", "Medium", "High", "Without").required(),
   deadline: Joi.date().min("now").required(),
-  board: Joi.string().required(),
+  column: Joi.string().required(),
 }).options({ abortEarly: false });
 
 module.exports = { Task, taskSchemaJoi };
