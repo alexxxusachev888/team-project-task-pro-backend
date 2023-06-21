@@ -1,4 +1,4 @@
-const { ctrlWrapper, handleHttpError } = require("../helpers");
+const { ctrlWrapper } = require("../helpers");
 
 const createColumn = async (req, res) => {};
 

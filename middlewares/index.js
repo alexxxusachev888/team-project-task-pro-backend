@@ -1,11 +1,11 @@
 const authenticate = require("./authenticate.js");
 const { validateUser } = require("./validateUser.js");
 const upload = require("./upload.js");
-const validateBoardColumnTask = require("./validateBoardColumnTask.js");
+const validateColumn = require("./validateColumn.js");
 
 module.exports = {
   authenticate,
   validateUser,
   upload,
-  validateBoardColumnTask,
+  validateColumn,
 };
