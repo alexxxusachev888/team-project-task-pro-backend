@@ -165,6 +165,9 @@
       "get": {
         "tags": ["User"],
         "summary": "Get current user",
+
+        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Цей ендпоінт повертає об'єкт, який містить інформацію про користувача, таку як ім'я, електронна пошта, ідентифікатор користувача тощо.\n\n Параметри: відсутні\n\n  Опис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/auth/sign-out з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
+
         "parametres": [],
         "requestBody": {
           "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
@@ -177,18 +180,35 @@
         },
         "security": [{ "Bearer": [] }],
         "responses": {
-          "201": {
+          "200": {
             "description": "Successful response",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationResponse"
+                  "$ref": "#/components/schemas/currentResponse"
                 }
               }
             }
           },
-          "400": {
-            "description": "Bad request"
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update current user",
+        "description": "Підтвердження користувача",
+        "parametres": [],
+        "requestBody": {
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true,
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationRequest"
+            }
           }
         }
       }
@@ -318,7 +338,32 @@
           }
         }
       },
-      "errorUnauthorized": {}
+      "errorUnauthorized": {},
+      "currentResponse": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's img",
+            "format": "URL"
+          },
+          "token": {
+            "type": "string",
+            "description": "User's token"
+          }
+        }
+      }
     },
     "securitySchemes": {
       "Bearer": {
