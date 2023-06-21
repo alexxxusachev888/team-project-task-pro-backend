@@ -98,18 +98,6 @@ const avatarUpdate = async (req, res) => {
   res.status(200).json({ avatarURL });
 };
 
-
-const refreshToken = async (req, res) => {
-  const { _id } = req.user;
-
-  const newToken = jwt.sign({ id: _id }, process.env.JWT_SECRET, {
-    expiresIn: "15h",
-  });
-  await User.findByIdAndUpdate(_id, { token: newToken });
-
-  res.json({ token: newToken });
-};
-
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -117,5 +105,4 @@ module.exports = {
   update: ctrlWrapper(update),
   avatarUpdate: ctrlWrapper(avatarUpdate),
   getCurrentUser: ctrlWrapper(getCurrentUser),
-  refreshToken: ctrlWrapper(refreshToken),
 };

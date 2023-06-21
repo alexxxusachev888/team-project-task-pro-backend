@@ -13,6 +13,4 @@ router.post("/logout", authenticate, logout);
 router.patch("/", authenticate, validateUser(updateSchema), update);
 router.patch("/avatar", authenticate, upload.single("avatar"), avatarUpdate);
 
-router.post("/refresh", authenticate, refreshToken)
-
 module.exports = router;

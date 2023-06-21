@@ -3,7 +3,10 @@ const Joi = require('joi');
 const { handleMongooseError } = require('../helpers');
 
 const columnSchema = new Schema({
-    title: String,
+    title: {
+       type: String,
+        required: [true, 'Board`s title is required'],
+        unique: true,},
     board: {
         type: Schema.Types.ObjectId,
         ref: 'Board'
