@@ -4,10 +4,8 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 const gravatar = require("gravatar");
-const { nanoid } = require("nanoid");
 const cloudinary = require('cloudinary').v2;
-
-const { ctrlWrapper, handleHttpError, sendEmail } = require("../helpers");
+const { ctrlWrapper, handleHttpError } = require("../helpers");
 
 cloudinary.config({ 
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME, 
@@ -80,20 +78,6 @@ const update = async (req, res) => {
   res.json(user);
 };
 
-const updateTheme = async (req, res, next) => {
-    const { theme } = req.body;
-    const { _id } = req.user;
-
-    const user = await User.findById(_id);
-
-    if (!user) {
-      return next(new Error("User not found"));
-    }
-
-    await User.findByIdAndUpdate(_id, { theme });
-    res.json({ theme });
-};
-
 const avatarUpdate = async (req, res) => {
   const { _id } = req.user;
   const { path: tempDir, originalname } = req.file;
@@ -114,69 +98,11 @@ const avatarUpdate = async (req, res) => {
   res.status(200).json({ avatarURL });
 };
 
-const verify = async (req, res) => {
-  const { verificationCode } = req.params;
-  const user = await User.findOne({ verificationCode });
-
-  if (!user) {
-    throw handleHttpError(404, "User not found");
-  }
-
-  await User.findByIdAndUpdate(user._id, {
-    verify: true,
-    verificationCode: "",
-  });
-
-  res.json({
-    message: "Verification successful",
-  });
-};
-
-const resendVerificationEmail = async (req, res) => {
-  const { email } = req.body;
-  const user = User.findOne({ email });
-
-  if (!user) {
-    throw handleHttpError(404, "User not found");
-  }
-
-  if (user.verify) {
-    throw handleHttpError(400, "Verification has already been passed");
-  }
-
-  const emailData = {
-    to: email,
-    subject: "Please verify your email",
-    html: `<a href="${process.env.PROJECT_URL}/users/verify/${user.verificationCode}">Please verify your email</a>`,
-  };
-
-  await sendEmail(emailData);
-
-  res.json({
-    message: "Verification email sent",
-  });
-};
-
-const refreshToken = async (req, res) => {
-  const { _id } = req.user;
-
-  const newToken = jwt.sign({ id: _id }, process.env.JWT_SECRET, {
-    expiresIn: "15h",
-  });
-  await User.findByIdAndUpdate(_id, { token: newToken });
-
-  res.json({ token: newToken });
-};
-
 module.exports = {
   register: ctrlWrapper(register),
-  verify: ctrlWrapper(verify),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   update: ctrlWrapper(update),
   avatarUpdate: ctrlWrapper(avatarUpdate),
-  resendVerificationEmail: ctrlWrapper(resendVerificationEmail),
   getCurrentUser: ctrlWrapper(getCurrentUser),
-  updateTheme: ctrlWrapper(updateTheme),
-  refreshToken: ctrlWrapper(refreshToken),
 };

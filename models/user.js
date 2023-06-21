@@ -53,15 +53,10 @@ const updateSchema = Joi.object({
   avatarURL: Joi.string().uri().optional().messages(errorMessages('avatarURL')),
 }).options({ abortEarly: false });
 
-const themeUpdateSchema = Joi.object({
-  theme: Joi.string().valid('light', 'dark', 'violet').required().messages(errorMessages('theme')),
-}).options({ abortEarly: false });
-
 const schemas = {
   registerSchema,
   loginSchema,
   updateSchema,
-  themeUpdateSchema
 }
 
 module.exports = {
