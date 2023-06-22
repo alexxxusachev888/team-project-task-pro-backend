@@ -9,6 +9,7 @@ const app = express();
 
 const authRouter = require("./routes/auth");
 const boardRouter = require("./routes/board");
+const taskRouter = require("./routes/task");
 const columnRouter = require('./routes/column');
 const helpRouter = require("./routes/sendEmail");
 
@@ -19,6 +20,7 @@ app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/users", authRouter);
 app.use("/api/board", boardRouter);
+app.use("/api/tasks", taskRouter);
 app.use('/api/board', columnRouter);
 app.use("/api/help", helpRouter);
 
