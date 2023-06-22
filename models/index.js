@@ -1,6 +1,6 @@
 const { Board, boardCreateSchema, boardUpdateSchema, boardSchema } = require('./board');
 const { Column, columnSchemaJoi } = require('./column');
-const { Task, taskSchemaJoi } = require('./task');
+const { Task, taskSchemaJoi, taskUpdateSchemaJoi } = require('./task');
 const { User, userSchemaJoi } = require('./user');
 const { sendEmail, sendEmailSchemaJoi } = require('./sendEmail');
 
@@ -17,4 +17,5 @@ module.exports = {
     userSchemaJoi,
     sendEmail,
     sendEmailSchemaJoi,
+    taskUpdateSchemaJoi,
   };
