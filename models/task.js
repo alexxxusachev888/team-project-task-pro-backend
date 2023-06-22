@@ -24,6 +24,11 @@ const taskSchema = new Schema(
       min: Date.now(),
       //   default: Date.now(),
     },
+    status: {
+      type: String,
+      enum: ['in progress', 'done'],
+      required: [true, "Task`s status is required"],
+    },
     column: {
       type: Schema.Types.ObjectId,
       ref: "column",
@@ -41,6 +46,7 @@ const taskSchemaJoi = Joi.object({
   description: Joi.string().required(),
   priority: Joi.string().valid("Low", "Medium", "High", "Without").required(),
   deadline: Joi.date().min("now").required(),
+  status: Joi.string().valid('in progress', 'done').required(),
   column: Joi.string().required(),
 }).options({ abortEarly: false });
 

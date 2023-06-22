@@ -65,9 +65,9 @@ const login = async (req, res) => {
 };
 
 const getCurrentUser = async (req, res) => {
-  const { _id, name, email, avatarURL } = req.user;
+  const { _id, name, email, avatarURL, theme } = req.user;
 
-  res.json({ id: _id, name, email, avatarURL });
+  res.json({ id: _id, name, email, avatarURL, theme });
 };
 
 const logout = async (req, res) => {
@@ -87,22 +87,19 @@ const update = async (req, res) => {
 
 const avatarUpdate = async (req, res) => {
   const { _id } = req.user;
-  const { path: tempDir, originalname } = req.file;
+  const { path, originalname } = req.file;
 
   const newAvatarName = `${_id}_${originalname}`;
-  const image = await Jimp.read(tempDir);
-  await image.resize(233, 233).writeAsync(tempDir);
 
-  const result = await cloudinary.uploader.upload(tempDir, {
-    public_id: `avatars/${newAvatarName}`,
+  const result = await cloudinary.uploader.upload(path, { 
+    public_id: `avatars/${newAvatarName}`, 
     overwrite: true,
+    transformation: { width: 68, height: 68, crop: "fill"}
   });
 
-  await fs.unlink(tempDir);
-  const avatarURL = result.url;
-  await User.findByIdAndUpdate(_id, { avatarURL });
+  await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
 
-  res.status(200).json({ avatarURL });
+  res.status(200).json({ avatarURL: result.secure_url });
 };
 
 module.exports = {

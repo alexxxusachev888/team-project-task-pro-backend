@@ -22,6 +22,10 @@ const boardSchema = new Schema(
       ref: 'user',
       required: true,
     },
+    columns: [{
+      type: Schema.Types.ObjectId,
+      ref: 'column',
+    }],
   },
   { versionKey: false, timestamps: true }
 );
@@ -29,14 +33,22 @@ const boardSchema = new Schema(
 const Board = model('board', boardSchema);
 boardSchema.post('save', handleMongooseError);
 
-const boardSchemaJoi = Joi.object({
+const boardCreateSchema = Joi.object({
   title: Joi.string()
     .min(2)
     .max(100)
     .required()
     .messages(errorMessages('title')),
-  icon: Joi.string().required().messages(errorMessages('icon')),
-  background: Joi.string().required().messages(errorMessages('background')),
+  iconId: Joi.string().required().messages(errorMessages('icon')),
+  backgroundId: Joi.string().required().messages(errorMessages('background')),
+  columns: Joi.array().items(Joi.string()).optional()
 }).options({ abortEarly: false });
 
-module.exports = { Board, boardSchemaJoi, boardSchema };
+const boardUpdateSchema = Joi.object({
+  title: Joi.string().min(2).max(100).messages(errorMessages('title')),
+  iconId: Joi.string().messages(errorMessages('icon')),
+  backgroundId: Joi.string().messages(errorMessages('background')),
+  columns: Joi.array().items(Joi.string()).optional()
+}).options({ abortEarly: false });
+
+module.exports = { Board, boardCreateSchema, boardUpdateSchema, boardSchema };
