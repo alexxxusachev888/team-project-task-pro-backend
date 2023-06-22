@@ -10,7 +10,7 @@ const app = express();
 const authRouter = require("./routes/auth");
 const boardRouter = require("./routes/board");
 /* const columnRouter = require('./routes/columns'); */
-const taskRouter = require("./routes/board");
+const taskRouter = require("./routes/task");
 
 app.use(cors());
 app.use(express.json());

@@ -44,4 +44,12 @@ const taskSchemaJoi = Joi.object({
   column: Joi.string().required(),
 }).options({ abortEarly: false });
 
-module.exports = { Task, taskSchemaJoi };
+const taskUpdateSchemaJoi = Joi.object({
+  title: Joi.string(),
+  description: Joi.string(),
+  priority: Joi.string().valid("Low", "Medium", "High", "Without"),
+  deadline: Joi.date().min("now"),
+  column: Joi.string(),
+}).options({ abortEarly: false });
+
+module.exports = { Task, taskSchemaJoi, taskUpdateSchemaJoi };

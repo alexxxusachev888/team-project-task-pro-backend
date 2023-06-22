@@ -42,7 +42,7 @@ const filterTasksByPriority = async (req, res) => {
 };
 
 module.exports = {
-  createTask: ctrlWrapper(getTaskById),
+  getTaskById: ctrlWrapper(getTaskById),
   createTask: ctrlWrapper(createTask),
   updateTask: ctrlWrapper(updateTask),
   deleteTask: ctrlWrapper(deleteTask),
