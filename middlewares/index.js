@@ -1,11 +1,9 @@
 const authenticate = require("./authenticate.js");
-const { validateUser } = require("./validateUser.js");
 const uploadCloud = require("./uploadCloud.js");
-const validateColumn = require("./validateColumn.js");
+const validateSchema = require("./validateSchema.js");
 
 module.exports = {
   authenticate,
-  validateUser,
+  validateSchema,
   uploadCloud,
-  validateColumn,
 };

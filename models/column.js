@@ -26,10 +26,15 @@ const columnSchemaJoi = Joi.object({
   tasks: Joi.array().items(Joi.string()),
 }).options({ abortEarly: false });
 
+const columnUpdateSchemaJoi = Joi.object({
+  title: Joi.string().min(2).max(100).required(),
+}).options({ abortEarly: false });
+
 const Column = model("column", columnSchema);
 columnSchema.post("save", handleMongooseError);
 
 module.exports = {
   Column,
   columnSchemaJoi,
+  columnUpdateSchemaJoi
 };
