@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const { validateTask, authenticate } = require("../middlewares");
+const { validateSchema, authenticate } = require("../middlewares");
 const {
   getTaskById,
   createTask,
@@ -9,13 +9,15 @@ const {
   deleteTask,
   filterTasksByPriority,
 } = require("../controllers/tasks");
-const { taskSchemaJoi, taskUpdateSchemaJoi } = require("../models/task");
+
+const { taskSchemaJoi, taskUpdateSchemaJoi } = require("../models");
 
 router.use(authenticate);
 
 router.get("/:id", getTaskById);
-router.post("/", validateTask(taskSchemaJoi), createTask);
-router.patch("/:id", validateTask(taskUpdateSchemaJoi), updateTask);
+
+router.post("/", validateSchema(taskSchemaJoi), createTask);
+router.patch("/:id", validateSchema(taskUpdateSchemaJoi), updateTask);
 router.delete("/:id", deleteTask);
 router.get("/:priority:columnId", filterTasksByPriority);
 

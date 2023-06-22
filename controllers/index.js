@@ -1,7 +1,7 @@
 const { register, login, logout, update, avatarUpdate, getCurrentUser } = require('./auth');
-const { createBoard, getAllBoards, getBoardById, updateBoard, deleteBoard } = require('./boards');
+const { createBoard, getAllBoards, getBoardById, updateBoard, deleteBoard, getTestBoardOne, getTestBoardTwo } = require('./boards');
 const { createColumn, getColumns, getColumnById, updateColumn, deleteColumn } = require('./columns');
-const { createTask, getTasks, getTaskById, updateTask, deleteTask } = require('./tasks');
+const { createTask, getTasks, getTaskById, updateTask, deleteTask, filterTasksByPriority} = require('./tasks');
 const { sendEmail } = require('./sendEmail');
 
 module.exports = {  
@@ -27,4 +27,7 @@ module.exports = {
     updateTask,
     deleteTask,
     sendEmail,
+    filterTasksByPriority,
+    getTestBoardOne,
+    getTestBoardTwo
 };

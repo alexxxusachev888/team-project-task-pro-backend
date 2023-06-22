@@ -2,6 +2,7 @@ const { ctrlWrapper, handleHttpError } = require('../helpers');
 const { Board } = require('../models/board');
 const { Task } = require('../models/task');
 const { Column } = require('../models/column');
+const { populate } = require('dotenv');
 
 const createBoard = async (req, res) => {
   const { _id: owner } = req.user;
@@ -41,7 +42,7 @@ const getAllBoards = async (req, res) => {
   res.status(200).json(boards);
 };
 
-const getBoardByID = async (req, res) => {
+const getBoardById = async (req, res) => {
   const { _id: owner } = req.user;
 
   let columns = await Column.find({ owner });
@@ -53,10 +54,49 @@ const getBoardByID = async (req, res) => {
   res.status(200).json({ columns, tasks });
 };
 
+
+const getTestBoardOne = async (req, res) => {
+  const { _id: owner } = req.user;
+  
+  const board = await Board.findOne({ owner }).populate({
+    path: 'columns',
+    populate: {
+      path: 'tasks',
+    },
+  });
+
+  if (!board) throw handleHttpError(404, 'Not found');
+
+  res.status(200).json(board);
+};
+
+const getTestBoardTwo = async (req, res) => {
+  const { _id: owner } = req.user;
+
+  const boards = await Board.find({ owner });
+  const boardsIds = boards.map(({ _id }) => _id);
+  const columns = await Column.find({ board: { $in: boardsIds } });
+  const columnsIds = columns.map(({_id}) => _id);
+
+  const tasks = await Task.find({ column: { $in: columnsIds } });
+
+  if (!boards.length ||  !columns.length || !tasks.length) throw handleHttpError(404, 'Not found');
+
+  res.status(200).json({ boards, columns, tasks });
+};
+
 module.exports = {
   createBoard: ctrlWrapper(createBoard),
   updateBoard: ctrlWrapper(updateBoard),
   deleteBoard: ctrlWrapper(deleteBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
-  getBoardByID: ctrlWrapper(getBoardByID),
+  getBoardById: ctrlWrapper(getBoardById),
+  getTestBoardOne: ctrlWrapper(getTestBoardOne),
+  getTestBoardTwo: ctrlWrapper(getTestBoardTwo),
 };
+
+
+
+
+
+

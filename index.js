@@ -9,8 +9,8 @@ const app = express();
 
 const authRouter = require("./routes/auth");
 const boardRouter = require("./routes/board");
-const taskRouter = require("./routes/task");
 const columnRouter = require('./routes/column');
+const taskRouter = require("./routes/task");
 const helpRouter = require("./routes/sendEmail");
 
 app.use(cors());
