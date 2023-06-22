@@ -4,7 +4,7 @@ const app = require("./index.js");
 mongoose
   .connect(process.env.DB_HOST)
   .then(() => {
-    app.listen(5000, () => {
+    app.listen(3000, () => {
       console.log("Server running on port: 5000");
       console.log("Database connection successful");
     });
