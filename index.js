@@ -9,7 +9,7 @@ const app = express();
 
 const authRouter = require("./routes/auth");
 const boardRouter = require("./routes/board");
-/* const columnRouter = require('./routes/columns'); */
+const columnRouter = require('./routes/column');
 const helpRouter = require("./routes/sendEmail");
 
 app.use(cors());
@@ -19,7 +19,7 @@ app.use(express.static("public"));
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use("/api/users", authRouter);
 app.use("/api/board", boardRouter);
-/* app.use('/api/boards', columnRouter); */
+app.use('/api/board', columnRouter);
 app.use("/api/help", helpRouter);
 
 app.use((req, res) => {
