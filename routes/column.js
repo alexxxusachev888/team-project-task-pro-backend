@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createColumn,updateColumn, deleteColumn } = require('../controllers/columns');
+const { createColumn, updateColumn, deleteColumn } = require('../controllers/columns');
 const { validateColumn, authenticate } = require('../middlewares');
 
 router.use(authenticate);

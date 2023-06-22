@@ -65,9 +65,9 @@ const login = async (req, res) => {
 };
 
 const getCurrentUser = async (req, res) => {
-  const { _id, name, email, avatarURL } = req.user;
+  const { _id, name, email, avatarURL, theme } = req.user;
 
-  res.json({ id: _id, name, email, avatarURL });
+  res.json({ id: _id, name, email, avatarURL, theme });
 };
 
 const logout = async (req, res) => {

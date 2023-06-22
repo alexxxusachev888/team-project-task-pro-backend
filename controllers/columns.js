@@ -1,5 +1,9 @@
 const { ctrlWrapper } = require("../helpers");
 
+const getColumns = async (req, res) => {};
+
+const getColumnById = async (req, res) => {};
+
 const createColumn = async (req, res) => {};
 
 const updateColumn = async (req, res) => {};
