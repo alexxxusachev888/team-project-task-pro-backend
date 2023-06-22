@@ -28,10 +28,6 @@
       "description": "User endpoints"
     },
     {
-      "name": "Boards",
-      "description": "Boards endpoints"
-    },
-    {
       "name": "Tasks",
       "description": "Tasks endpoints"
     },
@@ -50,7 +46,7 @@
         "parametres": [],
         "requestBody": {
           "required": true,
-          "description": "Body description:\n\n 'name'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
+          "description": "Body description:\n\n 'username'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
           "content": {
             "application/json": {
               "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
@@ -59,11 +55,12 @@
         },
         "responses": {
           "201": {
-            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/RegistrationResponse"
                 }
               }
             }
@@ -79,7 +76,7 @@
             }
           },
           "409": {
-            "description": "Conflict",
+            "description": "Bad request",
             "content": {
               "application/json": {
                 "schema": {
@@ -95,26 +92,26 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
-        "description": "Вхід в систему існуючого користувача",
         "parametres": [],
         "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
+                "$ref": "#/components/schemas/SignInDto"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AuthResponse"
+                  "$ref": "#/components/schemas/SignInDto"
                 }
               }
             }
@@ -130,14 +127,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
+            "description": "Unauthorized \n\n Email or password is wrong"
           }
         }
       }
@@ -146,7 +136,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out existing user",
-        "description": "Вихід з системи. Знищується токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
+        "description": "Ендпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/user/logout з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
         "parametres": [],
         "security": [
           {
@@ -154,7 +144,12 @@
           }
         ],
         "requestBody": {
-          "description": "Sign out user\n\nRequired: Headers Authorization: 'Bearer': token"
+          "description": "Sign out user",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
         },
         "responses": {
           "204": {
@@ -162,14 +157,7 @@
           },
 
           "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
+            "description": "Unauthorized"
           }
         }
       }
@@ -225,104 +213,6 @@
           }
         }
       }
-    },
-
-    "/board": {
-      "get": {
-        "tags": ["Boards"],
-        "summary": "getAllBoards",
-        "description": "Користувач отримує всі дошки",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
-      }
-    },
-    "/board/{id}": {
-      "get": {
-        "tags": ["Boards"],
-        "summary": "getBoardByID",
-        "description": "Користувач отримує дошку по id",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
-      }
-    },
-    "/board/create": {
-      "post": {
-        "tags": ["Boards"],
-        "summary": "createBoard",
-        "description": "Користувач створює нову робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true,
-          "description": "Body description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id",
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateBoard" }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Response description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id\n\n 'owner'- string, id власника\n\n '_id'- string, id дошки",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/CreateBoardResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorBadRequestResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/board/update/{id}": {
-      "patch": {
-        "tags": ["Boards"],
-        "summary": "updateBoard",
-        "description": "Користувач оновлює робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
-      }
-    },
-    "/board/delete/{id}": {
-      "delete": {
-        "tags": ["Boards"],
-        "summary": "deleteBoard",
-        "description": "Користувач видаляє робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
-      }
     }
   },
   "components": {
@@ -348,109 +238,50 @@
           }
         }
       },
-
-      "AuthResponse": {
-        "type": "object",
-        "properties": {
-          "name": {
-            "type": "string",
-            "description": "User's name",
-            "example": "User name"
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "User's name",
+              "example": "User name"
+            },
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            }
           },
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
-          },
-          "token": {
-            "type": "string",
-            "description": "User's token",
-            "example": "token"
-          },
-          "avatarURL": {
-            "type": "string",
-            "description": "User's avatarURL",
-            "example": "avatarURL.jpg"
-          }
+          "required": ["name", "email", "password"]
         },
-        "required": ["name", "email", "token", "avatarURL"],
-        "example": {
-          "name": "User name",
-          "email": "example@gmail.com",
-          "token": "token",
-          "avatarURL": "avatarURL.jpg"
-        }
+        "example": [
+          {
+            "name": "User name",
+            "email": "example@gmail.com",
+            "userId": "qwerty123"
+          }
+        ]
       },
-
-      "LoginRequest": {
+      "SignInDto": {
         "type": "object",
-        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
-            "description": "User's email",
-            "format": "email"
+            "example": "User@gmail.com"
           },
           "password": {
             "type": "string",
-            "description": "User's password",
-            "example": "qwerty123"
+            "example": "User"
           }
-        }
-      },
-
-      "CreateBoard": {
-        "type": "object",
-        "required": ["title"],
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Board`s title",
-            "example": "BoardTitle"
-          },
-          "iconId": {
-            "type": "string",
-            "description": "Icon ID",
-            "example": "1"
-          },
-          "backgroundId": {
-            "type": "string",
-            "description": "Background ID",
-            "example": "1"
-          }
-        }
-      },
-
-      "CreateBoardResponse": {
-        "type": "object",
-        "required": ["title"],
-        "properties": {
-          "title": {
-            "type": "string",
-            "description": "Board`s title",
-            "example": "BoardTitle"
-          },
-          "iconId": {
-            "type": "string",
-            "description": "Icon ID",
-            "example": "1"
-          },
-          "backgroundId": {
-            "type": "string",
-            "description": "Background ID",
-            "example": "1"
-          },
-          "owner": {
-            "type": "string",
-            "description": "User ID",
-            "example": "1"
-          },
-          "_id": {
-            "type": "string",
-            "description": "Board ID",
-            "example": "1"
-          }
-        }
+        },
+        "required": ["email", "password"]
       },
 
       "errorBadRequestResponse": {
@@ -484,7 +315,6 @@
           }
         }
       },
-
       "errorNotFoundResponse": {
         "type": "object",
         "properties": {
@@ -500,7 +330,6 @@
           }
         }
       },
-
       "errorConflictResponse": {
         "type": "object",
         "properties": {
@@ -512,10 +341,11 @@
           "message": {
             "type": "string",
             "description": "Error message",
-            "example": "Email is already in use"
+            "example": "User with email - user@example.com, already exist."
           }
         }
       },
+      "errorUnauthorized": {},
 
       "currentResponse": {
         "type": "object",

@@ -13,9 +13,9 @@ const { boardCreateSchema, boardUpdateSchema } = require('../models/board');
 
 router.use(authenticate);
 
-router.post('/', validateUser(boardCreateSchema), createBoard);
-router.patch('/:id', validateUser(boardUpdateSchema), updateBoard);
-router.delete('/:id', deleteBoard);
+router.post('/create', validateUser(boardCreateSchema), createBoard);
+router.patch('/update/:id', validateUser(boardUpdateSchema), updateBoard);
+router.delete('/delete/:id', deleteBoard);
 router.get('/', getAllBoards);
 router.get('/:id', getBoardByID);
 
