@@ -38,6 +38,7 @@ const register = async (req, res) => {
     email: user.email,
     avatarURL,
     token,
+    theme: user.theme,
   });
 };
 
@@ -61,6 +62,7 @@ const login = async (req, res) => {
     email: user.email,
     avatarURL: user.avatarURL,
     token,
+    theme: user.theme,
   });
 };
 
@@ -91,10 +93,10 @@ const avatarUpdate = async (req, res) => {
 
   const newAvatarName = `${_id}_${originalname}`;
 
-  const result = await cloudinary.uploader.upload(path, { 
-    public_id: `avatars/${newAvatarName}`, 
+  const result = await cloudinary.uploader.upload(path, {
+    public_id: `avatars/${newAvatarName}`,
     overwrite: true,
-    transformation: { width: 68, height: 68, crop: "fill"}
+    transformation: { width: 68, height: 68, crop: 'fill' },
   });
 
   await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });
