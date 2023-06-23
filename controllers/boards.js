@@ -36,53 +36,33 @@ const deleteBoard = async (req, res) => {
 
 const getAllBoards = async (req, res) => {
   const { _id: owner } = req.user;
-
-  let boards = await Board.find({ owner });
-  boards = boards ? boards : [];
+  const boards = (await Board.find({ owner })) || [];
   res.status(200).json(boards);
 };
 
 const getBoardById = async (req, res) => {
-  const { _id: owner } = req.user;
+  // var 1 ============================================
+  // const { id: _id } = req.params;
+  // const board = await Board.findOne({ _id });
+  // if (!board) throw handleHttpError(404, `Board with id ${_id} not found`);
 
-  let columns = await Column.find({ owner });
-  let tasks = await Task.find({ owner });
+  // const boards = _id;
+  // const columns = (await Column.find({ boards })) || [];
+  // const tasks = (await Task.find({ boards })) || [];
 
-  columns = columns ? columns : [];
-  tasks = tasks ? tasks : [];
+  // res.status(200).json({ ...board._doc, columns, tasks });
 
-  res.status(200).json({ columns, tasks });
-};
-
-
-const getTestBoardOne = async (req, res) => {
-  const { _id: owner } = req.user;
-  
-  const board = await Board.findOne({ owner }).populate({
+  // var 2 =============================================
+  const { id: _id } = req.params;
+  const board = await Board.findOne({ _id }).populate({
     path: 'columns',
     populate: {
       path: 'tasks',
     },
   });
-
-  if (!board) throw handleHttpError(404, 'Not found');
-
+  if (!board) throw handleHttpError(404, `Board with id ${_id} not found`);
   res.status(200).json(board);
-};
-
-const getTestBoardTwo = async (req, res) => {
-  const { _id: owner } = req.user;
-
-  const boards = await Board.find({ owner });
-  const boardsIds = boards.map(({ _id }) => _id);
-  const columns = await Column.find({ board: { $in: boardsIds } });
-  const columnsIds = columns.map(({_id}) => _id);
-
-  const tasks = await Task.find({ column: { $in: columnsIds } });
-
-  if (!boards.length ||  !columns.length || !tasks.length) throw handleHttpError(404, 'Not found');
-
-  res.status(200).json({ boards, columns, tasks });
+  // ====================================================
 };
 
 module.exports = {
@@ -91,12 +71,4 @@ module.exports = {
   deleteBoard: ctrlWrapper(deleteBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
   getBoardById: ctrlWrapper(getBoardById),
-  getTestBoardOne: ctrlWrapper(getTestBoardOne),
-  getTestBoardTwo: ctrlWrapper(getTestBoardTwo),
 };
-
-
-
-
-
-
