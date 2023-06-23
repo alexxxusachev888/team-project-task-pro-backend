@@ -17,8 +17,7 @@ const config = {
 const transporter = nodemailer.createTransport(config);
 
 const sendEmail = async (req, res) => {
-  const { email } = req.user;
-  const { comment } = req.body;
+  const { email, comment } = req.body;
 
   const user = await User.findOne({ email });
   if (!user) throw handleHttpError(401, "Email or password is wrong");
