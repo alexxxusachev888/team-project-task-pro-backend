@@ -44,7 +44,7 @@ taskSchema.post("save", handleMongooseError);
 const taskSchemaJoi = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
-  priority: Joi.string().valid("Low", "Medium", "High", "Without").required(),
+  priority: Joi.string().valid("low", "medium", "high", "without").required(),
   deadline: Joi.date().min("now").required(),
   status: Joi.string().valid('in progress', 'done').required(),
   column: Joi.string().required(),
@@ -53,7 +53,7 @@ const taskSchemaJoi = Joi.object({
 const taskUpdateSchemaJoi = Joi.object({
   title: Joi.string(),
   description: Joi.string(),
-  priority: Joi.string().valid("Low", "Medium", "High", "Without"),
+  priority: Joi.string().valid("low", "medium", "high", "without"),
   deadline: Joi.date().min("now"),
   column: Joi.string(),
 }).options({ abortEarly: false });
