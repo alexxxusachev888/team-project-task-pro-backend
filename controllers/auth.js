@@ -1,7 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs/promises');
-const Jimp = require('jimp');
 const gravatar = require('gravatar');
 const cloudinary = require('cloudinary').v2;
 const { ctrlWrapper, handleHttpError } = require('../helpers');
