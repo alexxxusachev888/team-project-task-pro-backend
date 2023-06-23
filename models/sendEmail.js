@@ -9,6 +9,11 @@ const sendEmailSchema = new Schema(
       required: [true, "Comment is required"],
       unique: true,
     },
+    email: {
+      type: String,
+      required: [true, "Please set an email for the user."],
+      unique: true,
+    },
 
     owner: {
       type: Schema.Types.ObjectId,
@@ -22,6 +27,7 @@ const sendEmail = model("sendEmail", sendEmailSchema);
 sendEmailSchema.post("save", handleMongooseError);
 
 const sendEmailSchemaJoi = Joi.object({
+  email: Joi.string().required().messages(errorMessages("email")),
   comment: Joi.string().required(),
 }).options({ abortEarly: false });
 
