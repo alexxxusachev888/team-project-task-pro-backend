@@ -16,9 +16,9 @@ router.use(authenticate);
 
 router.get("/:id", getTaskById);
 
-router.post("/", validateSchema(taskSchemaJoi), createTask);
+router.post("/:boardId/:columnId", validateSchema(taskSchemaJoi), createTask);
 router.patch("/:id", validateSchema(taskUpdateSchemaJoi), updateTask);
 router.delete("/:id", deleteTask);
-router.get("/:priority:columnId", filterTasksByPriority);
+router.get("/:priority/:columnId", filterTasksByPriority);
 
 module.exports = router;

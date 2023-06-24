@@ -14,20 +14,18 @@ const taskSchema = new Schema(
     },
     priority: {
       type: String,
-      enum: ["low", "medium", "high", "without"],
+      enum: ["Low", "Medium", "High", "Without"],
       required: [true, "Task`s priority is required"],
-      //   default: "Without",
     },
     deadline: {
       type: Date,
       required: [true, "Task`s deadline is required"],
       min: Date.now(),
-      //   default: Date.now(),
     },
-    status: {
-      type: String,
-      enum: ['in progress', 'done'],
-      required: [true, "Task`s status is required"],
+    board: {
+      type: Schema.Types.ObjectId,
+      ref: "board",
+      required: true,
     },
     column: {
       type: Schema.Types.ObjectId,
@@ -44,17 +42,18 @@ taskSchema.post("save", handleMongooseError);
 const taskSchemaJoi = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
-  priority: Joi.string().valid("low", "medium", "high", "without").required(),
+  priority: Joi.string().valid("Low", "Medium", "High", "Without").required(),
   deadline: Joi.date().min("now").required(),
-  status: Joi.string().valid('in progress', 'done').required(),
-  column: Joi.string().required(),
+  board: Joi.string(), //passing by res.params, without it route dont work, validateSchema takes only rew.body
+  column: Joi.string(), //passing by res.params, without it route dont work, validateSchema takes only rew.body
 }).options({ abortEarly: false });
 
 const taskUpdateSchemaJoi = Joi.object({
   title: Joi.string(),
   description: Joi.string(),
-  priority: Joi.string().valid("low", "medium", "high", "without"),
+  priority: Joi.string().valid("Low", "Medium", "High", "Without"),
   deadline: Joi.date().min("now"),
+  board: Joi.string(),
   column: Joi.string(),
 }).options({ abortEarly: false });
 
