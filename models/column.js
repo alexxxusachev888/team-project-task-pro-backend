@@ -12,18 +12,10 @@ const columnSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Board",
   },
-  tasks: [
-    {
-      type: Schema.Types.ObjectId,
-      ref: "Task",
-    },
-  ],
 });
 
 const columnSchemaJoi = Joi.object({
   title: Joi.string().min(2).max(100).required(),
-  board: Joi.string().required(),
-  tasks: Joi.array().items(Joi.string()),
 }).options({ abortEarly: false });
 
 const columnUpdateSchemaJoi = Joi.object({

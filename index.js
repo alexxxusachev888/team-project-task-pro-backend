@@ -24,8 +24,8 @@ app.use(express.static('public'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', authRouter);
 app.use('/api/board', boardRouter);
+app.use('/api/column', columnRouter);
 app.use('/api/tasks', taskRouter);
-app.use('/api/board', columnRouter);
 app.use('/api/help', helpRouter);
 
 // ==================================================
