@@ -20,13 +20,6 @@ const boardTestSchema = new Schema(
       type: String,
       ref: 'user',
     },
-    columns: [
-      {
-        type: Schema.Types.ObjectId,
-        // type: String,
-        ref: 'columntest',
-      },
-    ],
   },
   { versionKey: false, timestamps: true }
 );
@@ -43,13 +36,6 @@ const columnTestSchema = new Schema(
       type: String,
       ref: 'boardtest',
     },
-    tasks: [
-      {
-        type: Schema.Types.ObjectId,
-        // type: String,
-        ref: 'tasktest',
-      },
-    ],
   },
   { versionKey: false, timestamps: true }
 );

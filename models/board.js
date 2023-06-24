@@ -22,14 +22,6 @@ const boardSchema = new Schema(
       ref: 'user',
       required: true,
     },
-    // var 2 ==============================
-    columns: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'column',
-      },
-    ],
-    // ====================================
   },
   { versionKey: false, timestamps: true }
 );
@@ -45,16 +37,12 @@ const boardCreateSchema = Joi.object({
     .messages(errorMessages('title')),
   iconId: Joi.string().required().messages(errorMessages('icon')),
   backgroundId: Joi.string().required().messages(errorMessages('background')),
-  owner: Joi.string().messages(errorMessages('owner')),
-  columns: Joi.array().items(Joi.string()).optional(),
 }).options({ abortEarly: false });
 
 const boardUpdateSchema = Joi.object({
   title: Joi.string().min(2).max(100).messages(errorMessages('title')),
   iconId: Joi.string().messages(errorMessages('icon')),
   backgroundId: Joi.string().messages(errorMessages('background')),
-  owner: Joi.string().messages(errorMessages('owner')),
-  columns: Joi.array().items(Joi.string()).optional(),
 }).options({ abortEarly: false });
 
 module.exports = { Board, boardCreateSchema, boardUpdateSchema, boardSchema };
