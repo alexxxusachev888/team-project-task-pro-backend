@@ -19,7 +19,7 @@ app.use(express.static('public'));
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api/users', authRouter);
 app.use('/api/board', boardRouter);
-app.use('api/background', backgroundRouter);
+app.use('/api/background', backgroundRouter);
 /* app.use('/api/boards', columnRouter); */
 
 app.use((req, res) => {
