@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const gravatar = require('gravatar');
 const cloudinary = require('cloudinary').v2;
 const { ctrlWrapper, handleHttpError } = require('../helpers');
 const { User } = require('../models/user');
@@ -20,9 +19,12 @@ const register = async (req, res) => {
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
-  const avatarURL = gravatar.url(email, { s: '68' }, true);
 
-  await User.create({ ...req.body, password: hashedPassword, avatarURL });
+  await User.create({
+    ...req.body,
+    password: hashedPassword,
+    avatarURL: '',
+  });
 
   const user = await User.findOne({ email });
   const jwtPayload = { id: user._id };
@@ -34,7 +36,7 @@ const register = async (req, res) => {
   res.status(201).json({
     name: user.name,
     email: user.email,
-    avatarURL,
+    avatarURL: user.avatarURL,
     token,
     theme: user.theme,
   });
@@ -67,7 +69,13 @@ const login = async (req, res) => {
 const getCurrentUser = async (req, res) => {
   const { _id, name, email, avatarURL, theme } = req.user;
 
-  res.json({ id: _id, name, email, avatarURL, theme });
+  res.json({
+    id: _id,
+    name,
+    email,
+    avatarURL,
+    theme,
+  });
 };
 
 const logout = async (req, res) => {
