@@ -5,7 +5,7 @@ const getTaskById = async (req, res) => {
   const { id } = req.params;
   const result = await Task.findById(id, "-createdAt -updatedAt");
   if (!result) {
-    throw handleHttpError(404, `Contact with id: ${id} is not found`);
+    throw handleHttpError(404, `Task with id: ${id} is not found`);
   }
   res.json(result);
 };
@@ -26,7 +26,7 @@ const updateTask = async (req, res) => {
     new: true,
   });
   if (!result) {
-    throw HttpError(404, `Contact with id: ${contactId} is not found`);
+    throw handleHttpError(404, `Task with id: ${id} is not found`);
   }
   res.json(result);
 };
@@ -35,7 +35,7 @@ const deleteTask = async (req, res) => {
   const { id } = req.params;
   const result = await Task.findByIdAndDelete(id);
   if (!result) {
-    throw HttpError(404, `Contact with id: ${id} is not found`);
+    throw handleHttpError(404, `Task with id: ${id} is not found`);
   }
   res.status(204).send();
 };
