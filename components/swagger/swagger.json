@@ -391,14 +391,14 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of task that needs to be fetched",
+            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "Authorization",
             "in": "header",
-            "description": "The token issued to the current user",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
           }
@@ -455,23 +455,30 @@
           {
             "name": "boardId",
             "in": "path",
-            "description": "ID of the current board",
+            "description": "ID of the current board\n\n     'boardId' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "columnId",
             "in": "path",
-            "description": "ID of the current column",
+            "description": "ID of the current column\n\n     'columnId' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "Authorization",
             "in": "header",
-            "description": "The token issued to the current user",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be added \n\n Опис параметрів запиту: \n\n     'title' - string, required\n\n     'description' - string, required\n\n     'priority' - string, required, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, required\n\n     'board' - string (ObjectId), required\n\n     'column' - string (ObjectId), required\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PostTaskRequest" }
           }
         ],
         "responses": {
@@ -516,16 +523,23 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of task that needs to be updated",
+            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "Authorization",
             "in": "header",
-            "description": "The token issued to the current user",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be updated \n\n Опис параметрів запиту: \n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PatchTaskRequest" }
           }
         ],
         "responses": {
@@ -580,14 +594,14 @@
           {
             "name": "id",
             "in": "path",
-            "description": "ID of task that needs to be deleted",
+            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "Authorization",
             "in": "header",
-            "description": "The token issued to the current user",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
           }
@@ -637,21 +651,21 @@
           {
             "name": "priority",
             "in": "path",
-            "description": "'priority' property to be filtered, value from ['Low', 'Medium', 'High', 'Without'] list",
+            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without'] list",
             "required": true,
             "type": "string"
           },
           {
             "name": "columnId",
             "in": "path",
-            "description": "'columnId' property to be filtered",
+            "description": "'columnId' - property to be filtered by\n\n     'columnId' - string (ObjectId)",
             "required": true,
             "type": "string"
           },
           {
             "name": "Authorization",
             "in": "header",
-            "description": "The token issued to the current user",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
           }
@@ -864,6 +878,80 @@
             "type": "string",
             "description": "Board ID",
             "example": "1"
+          }
+        }
+      },
+
+      "PostTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650"
+          }
+        }
+      },
+
+      "PatchTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title - optional"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description - optional"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium - optional"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z - optional"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5 - optional"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650 - optional"
           }
         }
       },
