@@ -290,24 +290,181 @@
       "get": {
         "tags": ["Boards"],
         "summary": "getAllBoards",
-        "description": "Користувач отримує всі дошки",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
+        "description": "Користувач отримує масив всіх дошок або пустий масив, якщо такі відсутні",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetAllBoardsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
-    "/board/{id}": {
+    "/board/getById/{id}": {
       "get": {
         "tags": ["Boards"],
         "summary": "getBoardByID",
         "description": "Користувач отримує дошку по id",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of board that needs to be fetched\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBoardByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/board/getCurrent": {
+      "get": {
+        "tags": ["Boards"],
+        "summary": "getCurrent",
+        "description": "Користувач отримує останню дошку, з якою працював юзер",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBoardByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/board/create": {
@@ -315,16 +472,22 @@
         "tags": ["Boards"],
         "summary": "createBoard",
         "description": "Користувач створює нову робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true,
-          "description": "Body description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id",
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/CreateBoard" }
-            }
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Body description: \n\n    '_id' - string (ObjectId)\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/CreateBoard" }
           }
-        },
+        ],
         "responses": {
           "201": {
             "description": "Response description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id\n\n 'owner'- string, id власника\n\n '_id'- string, id дошки",
@@ -364,11 +527,71 @@
         "tags": ["Boards"],
         "summary": "updateBoard",
         "description": "Користувач оновлює робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of board that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Board object that needs to be updated \n\n Опис параметрів запиту: \n\n    'title'- string, board title - optional\n\n    'iconId'- string, board icon id - optional\n\n    'backgroundId'- string, board background id - optional",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/CreateBoard" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetBoardByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/board/delete/{id}": {
@@ -376,11 +599,57 @@
         "tags": ["Boards"],
         "summary": "deleteBoard",
         "description": "Користувач видаляє робочу дошку",
-        "parametres": [],
-        "requestBody": {
-          "required": true
-        },
-        "responses": {}
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of board that needs to be deleted\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
       }
     },
     "/tasks/{id} ": {
@@ -828,10 +1097,138 @@
         }
       },
 
+      "GetAllBoardsResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board`s id",
+            "example": "6498c7649a32ea75e83dfa35"
+          },
+          "title": {
+            "type": "string",
+            "description": "Board`s title",
+            "example": "Board Title"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Icon ID",
+            "example": "1"
+          },
+          "backgroundId": {
+            "type": "string",
+            "description": "Background ID",
+            "example": "1"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Board`s owner",
+            "example": "6498c7649a32ea75e83dfa35"
+          }
+        }
+      },
+
+      "GetBoardByIdResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board`s id",
+            "example": "6498c7649a32ea75e83dfa35"
+          },
+          "title": {
+            "type": "string",
+            "description": "Board`s title",
+            "example": "Board Title"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Icon ID",
+            "example": "1"
+          },
+          "backgroundId": {
+            "type": "string",
+            "description": "Background ID",
+            "example": "1"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Board`s owner",
+            "example": "6498c7649a32ea75e83dfa35"
+          },
+          "columns": {
+            "type": "object",
+            "description": "Array of columns",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "example": "6498c7649a32ea75e83dfa35"
+              },
+              "title": {
+                "type": "string",
+                "example": "Board Title"
+              },
+              "board": {
+                "type": "string",
+                "example": "6498c7649a32ea75e83dfa35"
+              }
+            }
+          },
+          "tasks": {
+            "type": "object",
+            "description": "Array of tasks",
+            "properties": {
+              "_id": {
+                "type": "string",
+                "description": "Board ID",
+                "example": "649716d4000e004dc6510753"
+              },
+              "title": {
+                "type": "string",
+                "description": "Task`s title",
+                "example": "Task`s title"
+              },
+              "description": {
+                "type": "string",
+                "description": "Task`s description",
+                "example": "Task`s description"
+              },
+              "priority": {
+                "type": "string",
+                "description": "Task`s priority",
+                "example": "Medium"
+              },
+              "deadline": {
+                "type": "date",
+                "description": "Task`s deadline",
+                "example": "2023-12-31T22:00:00.000Z"
+              },
+              "board": {
+                "type": "string",
+                "description": "Task board's id",
+                "example": "649714c3864b736704fe10e5"
+              },
+              "column": {
+                "type": "string",
+                "description": "Task column's id",
+                "example": "649713f43e0e7da655c4e650"
+              }
+            }
+          }
+        }
+      },
+
       "CreateBoard": {
         "type": "object",
         "required": ["title"],
         "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board ID",
+            "example": "649716d4000e004dc6510753"
+          },
           "title": {
             "type": "string",
             "description": "Board`s title",
@@ -854,6 +1251,11 @@
         "type": "object",
         "required": ["title"],
         "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board ID",
+            "example": "6498c7649a32ea75e83dfa35"
+          },
           "title": {
             "type": "string",
             "description": "Board`s title",
@@ -873,11 +1275,28 @@
             "type": "string",
             "description": "User ID",
             "example": "1"
-          },
-          "_id": {
+          }
+        }
+      },
+
+      "PatchBoardRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
             "type": "string",
-            "description": "Board ID",
-            "example": "1"
+            "description": "Board`s title",
+            "example": "BoardTitle - optional"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Icon ID",
+            "example": "1 - optional"
+          },
+          "backgroundId": {
+            "type": "string",
+            "description": "Background ID",
+            "example": "1 - optional"
           }
         }
       },
