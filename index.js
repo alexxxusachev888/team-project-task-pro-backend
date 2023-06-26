@@ -12,10 +12,12 @@ const boardRouter = require('./routes/board');
 const columnRouter = require('./routes/column');
 const taskRouter = require('./routes/task');
 const helpRouter = require('./routes/sendEmail');
+const backgroundRouter = require('./routes/background');
 
 // ==============================================
 const boardtestRouter = require('./routes/boardTest');
 // ==============================================
+
 
 app.use(cors());
 app.use(express.json());
@@ -27,6 +29,7 @@ app.use('/api/board', boardRouter);
 app.use('/api/column', columnRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/help', helpRouter);
+app.use('/api/background', backgroundRouter);
 
 // ==================================================
 app.use('/api/boardtest', boardtestRouter);
