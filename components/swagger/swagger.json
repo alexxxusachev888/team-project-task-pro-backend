@@ -28,12 +28,12 @@
       "description": "User endpoints"
     },
     {
-      "name": "Tasks",
-      "description": "Tasks endpoints"
+      "name": "Boards",
+      "description": "Boards endpoints"
     },
     {
-      "name": "Tasks+",
-      "description": "Додамо ще"
+      "name": "Tasks",
+      "description": "Tasks endpoints"
     }
   ],
 
@@ -42,10 +42,11 @@
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
+        "description": "Реєстрація нового аккаунта.\n\n Створюється новий аккаунт і проводиться процедура входа в систему",
         "parametres": [],
         "requestBody": {
           "required": true,
-          "description": "Body description:\n\n 'username'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "description": "Body description:\n\n 'name'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
           "content": {
             "application/json": {
               "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
@@ -54,12 +55,11 @@
         },
         "responses": {
           "201": {
-            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
-
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistrationResponse"
+                  "$ref": "#/components/schemas/AuthResponse"
                 }
               }
             }
@@ -75,7 +75,7 @@
             }
           },
           "409": {
-            "description": "Bad request",
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
@@ -91,26 +91,26 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
+        "description": "Вхід в систему існуючого користувача",
         "parametres": [],
         "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
           "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/SignInDto"
+                "$ref": "#/components/schemas/LoginRequest"
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
-
+            "description": "Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SignInDto"
+                  "$ref": "#/components/schemas/AuthResponse"
                 }
               }
             }
@@ -126,7 +126,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized \n\n Email or password is wrong"
+            "description": "Unauthorized \n\n Email or password is wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -135,7 +142,7 @@
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out existing user",
-        "description": "Ендпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/user/logout з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
+        "description": "Вихід з системи. Знищується токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
         "parametres": [],
         "security": [
           {
@@ -143,20 +150,21 @@
           }
         ],
         "requestBody": {
-          "description": "Sign out user",
-          "content": {
-            "application/json": {
-              "schema": {}
-            }
-          }
+          "description": "Sign out user\n\nRequired: Headers Authorization: 'Bearer': token"
         },
         "responses": {
           "204": {
             "description": "Successful response"
           },
-
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized \n\n Email or password is wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -165,19 +173,8 @@
       "get": {
         "tags": ["User"],
         "summary": "Get current user",
-
-        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Цей ендпоінт повертає об'єкт, який містить інформацію про користувача, таку як ім'я, електронна пошта, ідентифікатор користувача тощо.\n\n Параметри: відсутні\n\n  Опис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/auth/sign-out з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
-
+        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Параметри: відсутні\n\n  Опис: Коли користувач перезавантажує сторінку, він робить запит на сервер з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен не є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен є валідним, то сесія користувача продовжується.",
         "parametres": [],
-        "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
-          "required": true,
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/RegistrationRequest"
-            }
-          }
-        },
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
@@ -191,7 +188,14 @@
             }
           },
           "401": {
-            "description": "Unauthorized"
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
           }
         }
       }
@@ -200,14 +204,494 @@
       "patch": {
         "tags": ["User"],
         "summary": "Update current user",
-        "description": "Підтвердження користувача",
+        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача.\n\n Параметри: ім'я та/або пошта та/або кольорова тема \n\n Користувач має бути авторизований",
+        "parametres": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'email' - string, valid user`s email [optional]\n\n'password' - string, довжина 8 - 64 символа [optional]\n\n'theme' - string, поточна тема користувача [optional]",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegistrationRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/currentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/avatar": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update current user`s avatar",
+        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача. \n\n Користувач має бути авторизований",
+        "parametres": [],
+        "security": [{ "Bearer": [] }],
+        "requestBody": {
+          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'avatar' - string, format .jpg or .png",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateAvatar"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateAvatarResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/board": {
+      "get": {
+        "tags": ["Boards"],
+        "summary": "getAllBoards",
+        "description": "Користувач отримує всі дошки",
         "parametres": [],
         "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/board/{id}": {
+      "get": {
+        "tags": ["Boards"],
+        "summary": "getBoardByID",
+        "description": "Користувач отримує дошку по id",
+        "parametres": [],
+        "requestBody": {
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/board/create": {
+      "post": {
+        "tags": ["Boards"],
+        "summary": "createBoard",
+        "description": "Користувач створює нову робочу дошку",
+        "parametres": [],
+        "requestBody": {
           "required": true,
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/RegistrationRequest"
+          "description": "Body description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/CreateBoard" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Response description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id\n\n 'owner'- string, id власника\n\n '_id'- string, id дошки",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateBoardResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \n\n Email or password is wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/board/update/{id}": {
+      "patch": {
+        "tags": ["Boards"],
+        "summary": "updateBoard",
+        "description": "Користувач оновлює робочу дошку",
+        "parametres": [],
+        "requestBody": {
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/board/delete/{id}": {
+      "delete": {
+        "tags": ["Boards"],
+        "summary": "deleteBoard",
+        "description": "Користувач видаляє робочу дошку",
+        "parametres": [],
+        "requestBody": {
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/tasks/{id} ": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "get task by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{boardId}{columnId}": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "create new task",
+        "parameters": [
+          {
+            "name": "boardId",
+            "in": "path",
+            "description": "ID of the current board\n\n     'boardId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "columnId",
+            "in": "path",
+            "description": "ID of the current column\n\n     'columnId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be added \n\n Опис параметрів запиту: \n\n     'title' - string, required\n\n     'description' - string, required\n\n     'priority' - string, required, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, required\n\n     'board' - string (ObjectId), required\n\n     'column' - string (ObjectId), required\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PostTaskRequest" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "update task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be updated \n\n Опис параметрів запиту: \n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PatchTaskRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}  ": {
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "delete task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{priority}{columnId}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "filtered by 'priority' and 'columnId' property task list",
+        "parameters": [
+          {
+            "name": "priority",
+            "in": "path",
+            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without'] list",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "columnId",
+            "in": "path",
+            "description": "'columnId' - property to be filtered by\n\n     'columnId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n Масив відфільтрованих об'єктів з наступними полями: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
             }
           }
         }
@@ -223,7 +707,7 @@
           "name": {
             "type": "string",
             "description": "User's name",
-            "example": "User"
+            "example": "User name"
           },
           "email": {
             "type": "string",
@@ -237,113 +721,66 @@
           }
         }
       },
-      "RegistrationResponse": {
-        "type": "array",
-        "items": {
-          "type": "object",
-          "properties": {
-            "name": {
-              "type": "string",
-              "description": "User's name",
-              "example": "User"
-            },
-            "email": {
-              "type": "string",
-              "description": "User's email",
-              "format": "email"
-            },
-            "password": {
-              "type": "string",
-              "description": "User's password",
-              "example": "qwerty123"
-            }
-          },
-          "required": ["name", "email", "password"]
-        },
-        "example": [{ "name": "User2", "email": "2@gmail.com", "userId": "2" }]
-      },
-      "SignInDto": {
+
+      "AuthResponse": {
         "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "token": {
+            "type": "string",
+            "description": "User's token",
+            "example": "token"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatarURL",
+            "example": "avatarURL.jpg"
+          }
+        },
+        "required": ["name", "email", "token", "avatarURL"],
+        "example": {
+          "name": "User name",
+          "email": "example@gmail.com",
+          "token": "token",
+          "avatarURL": "avatarURL.jpg"
+        }
+      },
+
+      "LoginRequest": {
+        "type": "object",
+        "required": ["email", "password"],
         "properties": {
           "email": {
             "type": "string",
-            "example": "User@gmail.com"
+            "description": "User's email",
+            "format": "email"
           },
           "password": {
             "type": "string",
-            "example": "User"
-          }
-        },
-        "required": ["email", "password"]
-      },
-
-      "errorBadRequestResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "Error status code",
-            "example": 400
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "Bad request."
+            "description": "User's password",
+            "example": "qwerty123"
           }
         }
       },
-
-      "errorUnauthorizedResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "Error status code",
-            "example": "401"
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "Not authorized"
-          }
-        }
-      },
-      "errorNotFoundResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "Error status code",
-            "example": "404"
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "Not found"
-          }
-        }
-      },
-      "errorConflictResponse": {
-        "type": "object",
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "Error status code",
-            "example": "409"
-          },
-          "message": {
-            "type": "string",
-            "description": "Error message",
-            "example": "User with email - user@example.com, already exist."
-          }
-        }
-      },
-      "errorUnauthorized": {},
 
       "currentResponse": {
         "type": "object",
         "required": ["name", "email", "password"],
         "properties": {
+          "id": {
+            "type": "string",
+            "description": "User's id",
+            "example": "123456"
+          },
           "name": {
             "type": "string",
             "description": "User's name",
@@ -365,6 +802,277 @@
             "description": "User's theme",
             "enum": ["light", "dark", "Violet"],
             "example": "light"
+          }
+        }
+      },
+      "UpdateAvatar": {
+        "type": "object",
+        "required": ["avatarimage"],
+        "properties": {
+          "avatarimage": {
+            "type": "string",
+            "description": "User's avatarimage",
+            "example": "avatarimage.jpg"
+          }
+        }
+      },
+      "UpdateAvatarResponse": {
+        "type": "object",
+        "required": ["avatarimage"],
+        "properties": {
+          "avatarURL": {
+            "type": "string",
+            "description": "User's avatarimage URL",
+            "example": "http://somecloud.avatarimage.jpg"
+          }
+        }
+      },
+
+      "CreateBoard": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Board`s title",
+            "example": "BoardTitle"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Icon ID",
+            "example": "1"
+          },
+          "backgroundId": {
+            "type": "string",
+            "description": "Background ID",
+            "example": "1"
+          }
+        }
+      },
+
+      "CreateBoardResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Board`s title",
+            "example": "BoardTitle"
+          },
+          "iconId": {
+            "type": "string",
+            "description": "Icon ID",
+            "example": "1"
+          },
+          "backgroundId": {
+            "type": "string",
+            "description": "Background ID",
+            "example": "1"
+          },
+          "owner": {
+            "type": "string",
+            "description": "User ID",
+            "example": "1"
+          },
+          "_id": {
+            "type": "string",
+            "description": "Board ID",
+            "example": "1"
+          }
+        }
+      },
+
+      "PostTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650"
+          }
+        }
+      },
+
+      "PatchTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title - optional"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description - optional"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium - optional"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z - optional"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5 - optional"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650 - optional"
+          }
+        }
+      },
+
+      "GetTaskByIdResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board ID",
+            "example": "649716d4000e004dc6510753"
+          },
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650"
+          }
+        }
+      },
+
+      "errorBadRequestResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Bad request"
+          }
+        }
+      },
+
+      "errorUnauthorizedResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "401"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Unauthorized"
+          }
+        }
+      },
+
+      "errorNotFoundResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "404"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not found"
+          }
+        }
+      },
+      "errorNotFoundTaskResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "404"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Task with id: 6494787af030656d2939b083 is not found"
+          }
+        }
+      },
+
+      "errorConflictResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "409"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Email is already in use"
           }
         }
       }

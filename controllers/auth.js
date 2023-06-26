@@ -1,7 +1,5 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const fs = require('fs/promises');
-const Jimp = require('jimp');
 const gravatar = require('gravatar');
 const cloudinary = require('cloudinary').v2;
 const { ctrlWrapper, handleHttpError } = require('../helpers');
@@ -38,6 +36,7 @@ const register = async (req, res) => {
     email: user.email,
     avatarURL,
     token,
+    theme: user.theme,
   });
 };
 
@@ -61,13 +60,14 @@ const login = async (req, res) => {
     email: user.email,
     avatarURL: user.avatarURL,
     token,
+    theme: user.theme,
   });
 };
 
 const getCurrentUser = async (req, res) => {
-  const { _id, name, email, avatarURL } = req.user;
+  const { _id, name, email, avatarURL, theme } = req.user;
 
-  res.json({ id: _id, name, email, avatarURL });
+  res.json({ id: _id, name, email, avatarURL, theme });
 };
 
 const logout = async (req, res) => {
@@ -91,10 +91,10 @@ const avatarUpdate = async (req, res) => {
 
   const newAvatarName = `${_id}_${originalname}`;
 
-  const result = await cloudinary.uploader.upload(path, { 
-    public_id: `avatars/${newAvatarName}`, 
+  const result = await cloudinary.uploader.upload(path, {
+    public_id: `avatars/${newAvatarName}`,
     overwrite: true,
-    transformation: { width: 68, height: 68, crop: "fill"}
+    transformation: { width: 68, height: 68, crop: 'fill' },
   });
 
   await User.findByIdAndUpdate(_id, { avatarURL: result.secure_url });

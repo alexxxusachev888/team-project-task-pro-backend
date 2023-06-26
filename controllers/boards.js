@@ -2,6 +2,7 @@ const { ctrlWrapper, handleHttpError } = require('../helpers');
 const { Board } = require('../models/board');
 const { Task } = require('../models/task');
 const { Column } = require('../models/column');
+const { populate } = require('dotenv');
 
 const createBoard = async (req, res) => {
   const { _id: owner } = req.user;
@@ -11,6 +12,7 @@ const createBoard = async (req, res) => {
   if (board) throw handleHttpError(400, 'This board title is allready in use');
 
   const newBoard = await Board.create({ ...req.body, owner });
+
   res.status(201).json(newBoard);
 };
 
@@ -35,22 +37,20 @@ const deleteBoard = async (req, res) => {
 
 const getAllBoards = async (req, res) => {
   const { _id: owner } = req.user;
-
-  let boards = await Board.find({ owner });
-  boards = boards ? boards : [];
+  const boards = (await Board.find({ owner })) || [];
   res.status(200).json(boards);
 };
 
-const getBoardByID = async (req, res) => {
-  const { _id: owner } = req.user;
+const getBoardById = async (req, res) => {
+  const { id } = req.params;
+  const board = await Board.findById(id);
+  if (!board) throw handleHttpError(404, `Board with id ${id} not found`);
 
-  let columns = await Column.find({ owner });
-  let tasks = await Task.find({ owner });
+  const boards = id;
+  const columns = (await Column.find({ boards })) || [];
+  const tasks = (await Task.find({ boards })) || [];
 
-  columns = columns ? columns : [];
-  tasks = tasks ? tasks : [];
-
-  res.status(200).json({ columns, tasks });
+  res.status(200).json({ ...board._doc, columns, tasks });
 };
 
 module.exports = {
@@ -58,5 +58,5 @@ module.exports = {
   updateBoard: ctrlWrapper(updateBoard),
   deleteBoard: ctrlWrapper(deleteBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
-  getBoardByID: ctrlWrapper(getBoardByID),
+  getBoardById: ctrlWrapper(getBoardById),
 };

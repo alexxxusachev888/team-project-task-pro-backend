@@ -1,7 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
-const { handleMongooseError } = require('../helpers');
-const { errorMessages } = require('../helpers');
+const { handleMongooseError, errorMessages } = require('../helpers');
 
 const userSchema = new Schema({
   name: {
@@ -24,6 +23,10 @@ const userSchema = new Schema({
   avatarURL: {
     type: String,
     default: '',
+  },
+  currentBoard: {
+    type: String,
+    default: null,
   },
   token: {
     type: String,

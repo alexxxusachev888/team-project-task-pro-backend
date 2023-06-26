@@ -1,0 +1,388 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Task-Pro API",
+    "description": "Tasks managing API",
+
+    "version": "1.0.0"
+  },
+  "produces": ["application/json"],
+
+  "servers": [
+    {
+      "url": "https://task-pro-app.onrender.com/api",
+      "description": "Main (production) server"
+    },
+    {
+      "url": "http://localhost:5000",
+      "description": "Internal staging server for testing"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Auth",
+      "description": "Authorization endpoints"
+    },
+    {
+      "name": "User",
+      "description": "User endpoints"
+    },
+    {
+      "name": "Tasks",
+      "description": "Tasks endpoints"
+    },
+    {
+      "name": "Tasks+",
+      "description": "Додамо ще"
+    }
+  ],
+
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "User registration",
+        "description": "Реєстрація нового аккаунта.\n\n Створюється новий аккаунт і проводиться процедура входа в систему",
+        "parametres": [],
+        "requestBody": {
+          "required": true,
+          "description": "Body description:\n\n 'username'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RegistrationResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorConflictResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign in existing user",
+        "parametres": [],
+        "requestBody": {
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SignInDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'id' - ObjectId, унікальний ідентифікатор користувача\n\n 'username' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.",
+
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SignInDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized \n\n Email or password is wrong"
+          }
+        }
+      }
+    },
+    "/users/logout": {
+      "post": {
+        "tags": ["Auth"],
+        "summary": "Sign out existing user",
+        "description": "Ендпоінт логауту - це механізм виходу з системи, який припиняє дію сесії користувача та знищує токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/user/logout з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
+        "parametres": [],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
+        "requestBody": {
+          "description": "Sign out user",
+          "content": {
+            "application/json": {
+              "schema": {}
+            }
+          }
+        },
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user",
+
+        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Цей ендпоінт повертає об'єкт, який містить інформацію про користувача, таку як ім'я, електронна пошта, ідентифікатор користувача тощо.\n\n Параметри: відсутні\n\n  Опис: Коли користувач натискає кнопку вийти з системи, він робить запит на URL /api/auth/sign-out з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
+
+        "parametres": [],
+        "requestBody": {
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true,
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationRequest"
+            }
+          }
+        },
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/currentResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/users/": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update current user",
+        "description": "Підтвердження користувача",
+        "parametres": [],
+        "requestBody": {
+          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, якісь символи і довжина",
+          "required": true,
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/RegistrationRequest"
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "RegistrationRequest": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User name"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "password": {
+            "type": "string",
+            "description": "User's password",
+            "example": "qwerty123"
+          }
+        }
+      },
+      "RegistrationResponse": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "User's name",
+              "example": "User name"
+            },
+            "email": {
+              "type": "string",
+              "description": "User's email",
+              "format": "email"
+            },
+            "password": {
+              "type": "string",
+              "description": "User's password",
+              "example": "qwerty123"
+            }
+          },
+          "required": ["name", "email", "password"]
+        },
+        "example": [
+          {
+            "name": "User name",
+            "email": "example@gmail.com",
+            "userId": "qwerty123"
+          }
+        ]
+      },
+      "SignInDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "example": "User@gmail.com"
+          },
+          "password": {
+            "type": "string",
+            "example": "User"
+          }
+        },
+        "required": ["email", "password"]
+      },
+
+      "errorBadRequestResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": 400
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Bad request."
+          }
+        }
+      },
+
+      "errorUnauthorizedResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "401"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not authorized"
+          }
+        }
+      },
+      "errorNotFoundResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "404"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Not found"
+          }
+        }
+      },
+      "errorConflictResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "409"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "User with email - user@example.com, already exist."
+          }
+        }
+      },
+      "errorUnauthorized": {},
+
+      "currentResponse": {
+        "type": "object",
+        "required": ["name", "email", "password"],
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "User's name",
+            "example": "User"
+          },
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "avatarURL": {
+            "type": "string",
+            "description": "User's img",
+            "format": "URL"
+          },
+
+          "theme": {
+            "type": "string",
+            "description": "User's theme",
+            "enum": ["light", "dark", "Violet"],
+            "example": "light"
+          }
+        }
+      }
+    },
+
+    "securitySchemes": {
+      "Bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
