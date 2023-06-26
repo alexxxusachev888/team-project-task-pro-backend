@@ -298,11 +298,23 @@
         "responses": {}
       }
     },
-    "/board/{id}": {
+    "/board/getById/{id}": {
       "get": {
         "tags": ["Boards"],
         "summary": "getBoardByID",
         "description": "Користувач отримує дошку по id",
+        "parametres": [],
+        "requestBody": {
+          "required": true
+        },
+        "responses": {}
+      }
+    },
+    "/board/getCurrent": {
+      "get": {
+        "tags": ["Boards"],
+        "summary": "getCurrent",
+        "description": "Користувач отримує останню дошку, з якою працював юзер",
         "parametres": [],
         "requestBody": {
           "required": true
