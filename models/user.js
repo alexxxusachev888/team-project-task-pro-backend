@@ -2,37 +2,40 @@ const { Schema, model } = require('mongoose');
 const Joi = require('joi');
 const { handleMongooseError, errorMessages } = require('../helpers');
 
-const userSchema = new Schema({
-  name: {
-    type: String,
-    required: [true, 'Please set a name for the user'],
+const userSchema = new Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Please set a name for the user'],
+    },
+    email: {
+      type: String,
+      required: [true, 'Please set an email for the user.'],
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: [true, 'Please set a password for the user'],
+    },
+    theme: {
+      type: String,
+      default: 'light',
+    },
+    avatarURL: {
+      type: String,
+      default: '',
+    },
+    currentBoard: {
+      type: String,
+      default: null,
+    },
+    token: {
+      type: String,
+      default: '',
+    },
   },
-  email: {
-    type: String,
-    required: [true, 'Please set an email for the user.'],
-    unique: true,
-  },
-  password: {
-    type: String,
-    required: [true, 'Please set a password for the user'],
-  },
-  theme: {
-    type: String,
-    default: 'light',
-  },
-  avatarURL: {
-    type: String,
-    default: '',
-  },
-  currentBoard: {
-    type: String,
-    default: null,
-  },
-  token: {
-    type: String,
-    default: '',
-  },
-}, {versionKey: false, timestamps: true});
+  { versionKey: false, timestamps: true }
+);
 
 const User = model('user', userSchema);
 userSchema.post('save', handleMongooseError);
@@ -52,15 +55,22 @@ const updateSchema = Joi.object({
   name: Joi.string().min(2).max(100).messages(errorMessages('name')),
   email: Joi.string().email().messages(errorMessages('email')),
   password: Joi.string().min(8).max(50).messages(errorMessages('password')),
-  theme: Joi.string().valid('light', 'dark', 'violet').messages(errorMessages('theme')),
+  theme: Joi.string()
+    .valid('light', 'dark', 'violet')
+    .messages(errorMessages('theme')),
   avatarURL: Joi.string().uri().optional().messages(errorMessages('avatarURL')),
+}).options({ abortEarly: false });
+
+const currentBoardSchema = Joi.object({
+  currentBoard: Joi.string().messages(errorMessages('currentBoard')),
 }).options({ abortEarly: false });
 
 const schemas = {
   registerSchema,
   loginSchema,
   updateSchema,
-}
+  currentBoardSchema,
+};
 
 module.exports = {
   User,

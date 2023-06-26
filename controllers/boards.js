@@ -3,6 +3,7 @@ const { Board } = require('../models/board');
 const { Task } = require('../models/task');
 const { Column } = require('../models/column');
 const { populate } = require('dotenv');
+const { User } = require('../models/user');
 
 const createBoard = async (req, res) => {
   const { _id: owner } = req.user;
@@ -53,10 +54,26 @@ const getBoardById = async (req, res) => {
   res.status(200).json({ ...board._doc, columns, tasks });
 };
 
+const setCurrentBoard = async (req, res) => {
+  const { _id } = req.user;
+  const user = await User.findByIdAndUpdate(_id, req.body, { new: true });
+  const currentBoardId = user.currentBoard;
+  res.status(200).json({ currentBoardId });
+};
+
+const getCurrentBoard = async (req, res) => {
+  const { _id } = req.user;
+  const user = await User.findById(_id);
+  const currentBoardId = user.currentBoard;
+  res.status(200).json({ currentBoardId });
+};
+
 module.exports = {
   createBoard: ctrlWrapper(createBoard),
   updateBoard: ctrlWrapper(updateBoard),
   deleteBoard: ctrlWrapper(deleteBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
   getBoardById: ctrlWrapper(getBoardById),
+  setCurrentBoard: ctrlWrapper(setCurrentBoard),
+  getCurrentBoard: ctrlWrapper(getCurrentBoard),
 };
