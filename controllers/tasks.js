@@ -1,9 +1,9 @@
-const { Task } = require("../models/task");
+const { Task } = require('../models/task');
 const {
   ctrlWrapper,
   handleHttpError,
   mongooseObjectIdCheck,
-} = require("../helpers");
+} = require('../helpers');
 
 const getTaskById = async (req, res) => {
   const { id } = req.params;
@@ -13,7 +13,7 @@ const getTaskById = async (req, res) => {
       `Bad request, id isn't match ObjectId mongoose type`
     );
   }
-  const result = await Task.findById(id, "-createdAt -updatedAt");
+  const result = await Task.findById(id, '-createdAt -updatedAt');
   if (!result) {
     throw handleHttpError(404, `Task with id: ${id} is not found`);
   }
@@ -82,7 +82,13 @@ const filterTasksByPriority = async (req, res) => {
       `Bad request, columnId isn't match ObjectId mongoose type`
     );
   }
-  const result = await Task.find({ column: columnId, priority });
+
+  const options =
+    priority === 'without'
+      ? { column: columnId }
+      : { column: columnId, priority };
+  const result = await Task.find(options);
+
   res.json(result);
 };
 
