@@ -61,15 +61,11 @@ const updateSchema = Joi.object({
   avatarURL: Joi.string().uri().optional().messages(errorMessages('avatarURL')),
 }).options({ abortEarly: false });
 
-const currentBoardSchema = Joi.object({
-  currentBoard: Joi.string().messages(errorMessages('currentBoard')),
-}).options({ abortEarly: false });
 
 const schemas = {
   registerSchema,
   loginSchema,
   updateSchema,
-  currentBoardSchema,
 };
 
 module.exports = {
