@@ -8,13 +8,18 @@ const { User } = require('../models/user');
 const createBoard = async (req, res) => {
   const { _id: owner } = req.user;
   const { title } = req.body;
-  const board = await Board.findOne({ owner, title });
 
+  const board = await Board.findOne({ owner, title });
   if (board) throw handleHttpError(400, 'This board title is allready in use');
 
   const newBoard = await Board.create({ ...req.body, owner });
 
-  res.status(201).json(newBoard);
+  const currentBoard = newBoard._id;
+  await User.findByIdAndUpdate(owner, { currentBoard }, { new: true });
+
+  const savedBoard = await Board.findById(currentBoard);
+
+  res.status(201).json(savedBoard);
 };
 
 const updateBoard = async (req, res) => {
@@ -43,22 +48,24 @@ const getAllBoards = async (req, res) => {
 };
 
 const getBoardById = async (req, res) => {
-  const { id } = req.params;
-  const board = await Board.findById(id);
-  if (!board) throw handleHttpError(404, `Board with id ${id} not found`);
+  const { id: currentBoard } = req.params;
+  const { _id: userId } = req.user;
 
-  const boards = id;
-  const columns = (await Column.find({ boards })) || [];
-  const tasks = (await Task.find({ boards })) || [];
+  const board = await Board.findById(currentBoard);
+  if (!board)
+    throw handleHttpError(404, `Board with id ${currentBoard} not found`);
+
+  const user = await User.findByIdAndUpdate(
+    userId,
+    { currentBoard },
+    {
+      new: true,
+    }
+  );
+  const columns = (await Column.find({ currentBoard })) || [];
+  const tasks = (await Task.find({ currentBoard })) || [];
 
   res.status(200).json({ ...board._doc, columns, tasks });
-};
-
-const setCurrentBoard = async (req, res) => {
-  const { _id } = req.user;
-  const user = await User.findByIdAndUpdate(_id, req.body, { new: true });
-  const currentBoardId = user.currentBoard;
-  res.status(200).json({ currentBoardId });
 };
 
 const getCurrentBoard = async (req, res) => {
@@ -74,6 +81,5 @@ module.exports = {
   deleteBoard: ctrlWrapper(deleteBoard),
   getAllBoards: ctrlWrapper(getAllBoards),
   getBoardById: ctrlWrapper(getBoardById),
-  setCurrentBoard: ctrlWrapper(setCurrentBoard),
   getCurrentBoard: ctrlWrapper(getCurrentBoard),
 };
