@@ -51,21 +51,16 @@ const getBoardById = async (req, res) => {
   const { id: board } = req.params;
   const { _id: userId } = req.user;
 
-  const currentBoard = await Board.findById(board);
+  const currentBoard = await Board.findById(board, "-createdAt -updatedAt");
   if (!currentBoard)
     throw handleHttpError(404, `Board with id ${board} not found`);
 
-  await User.findByIdAndUpdate(
-    userId,
-    { currentBoard: board },
-    {
-      new: true,
-    }
-  );
-  const columns = (await Column.find({ board })) || [];
-  const tasks = (await Task.find({ board })) || [];
+  await User.findByIdAndUpdate( userId,{currentBoard: board}, { new: true});
+  
+  const columns = (await Column.find({ board }, "-createdAt -updatedAt")) || [];
+  const tasks = (await Task.find( {board}, "-createdAt -updatedAt")) || [];
 
-  res.status(200).json({ ...board._doc, columns, tasks });
+  res.status(200).json({ ...currentBoard._doc, columns, tasks });
 };
 
 const getCurrentBoard = async (req, res) => {

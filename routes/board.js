@@ -11,9 +11,7 @@ const {
 } = require('../controllers');
 const { authenticate, validateSchema } = require('../middlewares');
 const { boardCreateSchema, boardUpdateSchema } = require('../models');
-const {
-  schemas: { currentBoardSchema },
-} = require('../models/user');
+const { schemas: { currentBoardSchema } } = require('../models/user');
 
 router.use(authenticate);
 

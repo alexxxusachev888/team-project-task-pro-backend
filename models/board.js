@@ -23,7 +23,7 @@ const boardSchema = new Schema(
       required: true,
     },
   },
-  { versionKey: false, timestamps: true }
+  { versionKey: false, timestamps: false }
 );
 
 const Board = model('board', boardSchema);
