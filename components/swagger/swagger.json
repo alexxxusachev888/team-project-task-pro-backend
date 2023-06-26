@@ -34,10 +34,6 @@
     {
       "name": "Tasks",
       "description": "Tasks endpoints"
-    },
-    {
-      "name": "Tasks+",
-      "description": "Додамо ще"
     }
   ],
 
@@ -386,6 +382,320 @@
         },
         "responses": {}
       }
+    },
+    "/tasks/{id} ": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "get task by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{boardId}{columnId}": {
+      "post": {
+        "tags": ["Tasks"],
+        "summary": "create new task",
+        "parameters": [
+          {
+            "name": "boardId",
+            "in": "path",
+            "description": "ID of the current board\n\n     'boardId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "columnId",
+            "in": "path",
+            "description": "ID of the current column\n\n     'columnId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be added \n\n Опис параметрів запиту: \n\n     'title' - string, required\n\n     'description' - string, required\n\n     'priority' - string, required, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, required\n\n     'board' - string (ObjectId), required\n\n     'column' - string (ObjectId), required\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PostTaskRequest" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "patch": {
+        "tags": ["Tasks"],
+        "summary": "update task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Task object that needs to be updated \n\n Опис параметрів запиту: \n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/PatchTaskRequest" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{id}  ": {
+      "delete": {
+        "tags": ["Tasks"],
+        "summary": "delete task",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundTaskResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/tasks/{priority}{columnId}": {
+      "get": {
+        "tags": ["Tasks"],
+        "summary": "filtered by 'priority' and 'columnId' property task list",
+        "parameters": [
+          {
+            "name": "priority",
+            "in": "path",
+            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without'] list",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "columnId",
+            "in": "path",
+            "description": "'columnId' - property to be filtered by\n\n     'columnId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n Опис параметрів відповіді: \n\n Масив відфільтрованих об'єктів з наступними полями: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -572,6 +882,122 @@
         }
       },
 
+      "PostTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650"
+          }
+        }
+      },
+
+      "PatchTaskRequest": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title - optional"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description - optional"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium - optional"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z - optional"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5 - optional"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650 - optional"
+          }
+        }
+      },
+
+      "GetTaskByIdResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Board ID",
+            "example": "649716d4000e004dc6510753"
+          },
+          "title": {
+            "type": "string",
+            "description": "Task`s title",
+            "example": "Task`s title"
+          },
+          "description": {
+            "type": "string",
+            "description": "Task`s description",
+            "example": "Task`s description"
+          },
+          "priority": {
+            "type": "string",
+            "description": "Task`s priority",
+            "example": "Medium"
+          },
+          "deadline": {
+            "type": "date",
+            "description": "Task`s deadline",
+            "example": "2023-12-31T22:00:00.000Z"
+          },
+          "board": {
+            "type": "string",
+            "description": "Task board's id",
+            "example": "649714c3864b736704fe10e5"
+          },
+          "column": {
+            "type": "string",
+            "description": "Task column's id",
+            "example": "649713f43e0e7da655c4e650"
+          }
+        }
+      },
+
       "errorBadRequestResponse": {
         "type": "object",
         "properties": {
@@ -583,7 +1009,7 @@
           "message": {
             "type": "string",
             "description": "Error message",
-            "example": "Bad request."
+            "example": "Bad request"
           }
         }
       },
@@ -599,7 +1025,7 @@
           "message": {
             "type": "string",
             "description": "Error message",
-            "example": "Not authorized"
+            "example": "Unauthorized"
           }
         }
       },
@@ -616,6 +1042,21 @@
             "type": "string",
             "description": "Error message",
             "example": "Not found"
+          }
+        }
+      },
+      "errorNotFoundTaskResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "404"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message",
+            "example": "Task with id: 6494787af030656d2939b083 is not found"
           }
         }
       },
