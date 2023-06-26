@@ -55,7 +55,7 @@ const getBoardById = async (req, res) => {
   if (!board)
     throw handleHttpError(404, `Board with id ${currentBoard} not found`);
 
-  const user = await User.findByIdAndUpdate(
+  await User.findByIdAndUpdate(
     userId,
     { currentBoard },
     {
