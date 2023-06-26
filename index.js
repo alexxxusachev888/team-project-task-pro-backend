@@ -14,11 +14,6 @@ const taskRouter = require('./routes/task');
 const helpRouter = require('./routes/sendEmail');
 const backgroundRouter = require('./routes/background');
 
-// ==============================================
-const boardtestRouter = require('./routes/boardTest');
-// ==============================================
-
-
 app.use(cors());
 app.use(express.json());
 app.use(express.static('public'));
@@ -30,10 +25,6 @@ app.use('/api/column', columnRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/help', helpRouter);
 app.use('/api/background', backgroundRouter);
-
-// ==================================================
-app.use('/api/boardtest', boardtestRouter);
-// ==================================================
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });

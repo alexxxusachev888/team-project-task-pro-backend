@@ -12,7 +12,8 @@ const columnSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Board",
   },
-});
+}, 
+{ versionKey: false, timestamps: false });
 
 const columnSchemaJoi = Joi.object({
   title: Joi.string().min(2).max(100).required(),
