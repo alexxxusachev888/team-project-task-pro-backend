@@ -48,22 +48,22 @@ const getAllBoards = async (req, res) => {
 };
 
 const getBoardById = async (req, res) => {
-  const { id: currentBoard } = req.params;
+  const { id: board } = req.params;
   const { _id: userId } = req.user;
 
-  const board = await Board.findById(currentBoard);
-  if (!board)
-    throw handleHttpError(404, `Board with id ${currentBoard} not found`);
+  const currentBoard = await Board.findById(board);
+  if (!currentBoard)
+    throw handleHttpError(404, `Board with id ${board} not found`);
 
   await User.findByIdAndUpdate(
     userId,
-    { currentBoard },
+    { currentBoard: board },
     {
       new: true,
     }
   );
-  const columns = (await Column.find({ currentBoard })) || [];
-  const tasks = (await Task.find({ currentBoard })) || [];
+  const columns = (await Column.find({ board })) || [];
+  const tasks = (await Task.find({ board })) || [];
 
   res.status(200).json({ ...board._doc, columns, tasks });
 };
