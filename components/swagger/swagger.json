@@ -413,7 +413,7 @@
       "get": {
         "tags": ["Boards"],
         "summary": "getCurrent",
-        "description": "Користувач отримує останню дошку, з якою працював юзер",
+        "description": "Користувач отримує останню дошку, з якою працював",
         "parameters": [
           {
             "name": "Authorization",

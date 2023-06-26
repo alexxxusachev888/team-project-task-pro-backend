@@ -51,23 +51,37 @@ const getBoardById = async (req, res) => {
   const { id: board } = req.params;
   const { _id: userId } = req.user;
 
-  const currentBoard = await Board.findById(board, "-createdAt -updatedAt");
+  const currentBoard = await Board.findById(board, '-createdAt -updatedAt');
   if (!currentBoard)
     throw handleHttpError(404, `Board with id ${board} not found`);
 
-  await User.findByIdAndUpdate( userId,{currentBoard: board}, { new: true});
-  
-  const columns = (await Column.find({ board }, "-createdAt -updatedAt")) || [];
-  const tasks = (await Task.find( {board}, "-createdAt -updatedAt")) || [];
+  await User.findByIdAndUpdate(userId, { currentBoard: board }, { new: true });
+
+  const columns = (await Column.find({ board }, '-createdAt -updatedAt')) || [];
+  const tasks = (await Task.find({ board }, '-createdAt -updatedAt')) || [];
 
   res.status(200).json({ ...currentBoard._doc, columns, tasks });
 };
 
 const getCurrentBoard = async (req, res) => {
-  const { _id } = req.user;
-  const user = await User.findById(_id);
-  const currentBoardId = user.currentBoard;
-  res.status(200).json({ currentBoardId });
+  // const { _id } = req.user;
+  // const user = await User.findById(_id);
+  // const currentBoardId = user.currentBoard;
+  // res.status(200).json({ currentBoardId });
+  // res.status(200).json({ currentBoardId });
+
+  const user = await User.findById(req.user._id);
+  const board = user.currentBoard;
+
+  const lastBoard =
+    (await Board.findById(board, '-createdAt -updatedAt')) || [];
+  if (lastBoard.length === 0) {
+    return res.status(200).json(lastBoard);
+  }
+
+  const columns = (await Column.find({ board }, '-createdAt -updatedAt')) || [];
+  const tasks = (await Task.find({ board }, '-createdAt -updatedAt')) || [];
+  res.status(200).json({ ...lastBoard._doc, columns, tasks });
 };
 
 module.exports = {
