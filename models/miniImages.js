@@ -9,14 +9,14 @@ const miniImgSchema = new Schema(
     },
     name: {
       type: String,
-      desktop: ["regular", "retina"],
+      image: ["regular", "retina"],
       required: true,
     },
   },
   { versionKey: false, timestamps: true }
 );
 
-const MiniImg = model("Background", backgroundSchema);
+const MiniImg = model("MiniImg", miniImgSchema);
 miniImgSchema.post("save", handleMongooseError);
 
 module.exports = { miniImgSchema, MiniImg };

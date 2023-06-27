@@ -25,6 +25,7 @@ app.use('/api/column', columnRouter);
 app.use('/api/tasks', taskRouter);
 app.use('/api/help', helpRouter);
 app.use('/api/background', backgroundRouter);
+app.use('/api/miniImages', miniImagesRouter);
 
 app.use((req, res) => {
   res.status(404).json({ message: 'Not found' });
