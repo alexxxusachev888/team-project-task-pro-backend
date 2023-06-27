@@ -80,8 +80,8 @@ const getCurrentUser = async (req, res) => {
     email,
     avatarURL,
     theme,
-    boards,
     currentBoard,
+    boards,
   });
 };
 

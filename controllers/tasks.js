@@ -35,8 +35,6 @@ const createTask = async (req, res) => {
     );
   }
 
-  let deadline = new Date(deadlineFromServer);
-  
   const result = await Task.create({
     ...req.body,
     board: boardId,
