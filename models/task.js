@@ -1,5 +1,6 @@
 const { Schema, model } = require('mongoose');
 const Joi = require('joi');
+const moment = require('moment');
 const { handleMongooseError, errorMessages } = require('../helpers');
 
 const taskSchema = new Schema(
@@ -43,7 +44,7 @@ const taskSchemaJoi = Joi.object({
   title: Joi.string().required(),
   description: Joi.string().required(),
   priority: Joi.string().valid('low', 'medium', 'high', 'without').required(),
-  deadline: Joi.date().min('now').required(),
+  deadline: Joi.date().min(moment().startOf('day').toDate()).required(),
   board: Joi.string(), //passing by res.params, without it route dont work, validateSchema takes only rew.body
   column: Joi.string(), //passing by res.params, without it route dont work, validateSchema takes only rew.body
 }).options({ abortEarly: false });
@@ -52,7 +53,7 @@ const taskUpdateSchemaJoi = Joi.object({
   title: Joi.string(),
   description: Joi.string(),
   priority: Joi.string().valid('low', 'medium', 'high', 'without'),
-  deadline: Joi.date().min('now'),
+  deadline: Joi.date().min(moment().startOf('day').toDate()),
   board: Joi.string(),
   column: Joi.string(),
 }).options({ abortEarly: false });
