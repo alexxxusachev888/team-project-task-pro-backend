@@ -20,7 +20,7 @@ const taskSchema = new Schema(
     deadline: {
       type: Date,
       required: [true, 'Task`s deadline is required'],
-      min: Date.now(),
+      min: new Date().toISOString(),
     },
     board: {
       type: Schema.Types.ObjectId,

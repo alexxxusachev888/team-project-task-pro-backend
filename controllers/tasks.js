@@ -34,6 +34,9 @@ const createTask = async (req, res) => {
       `Bad request, columnId isn't match ObjectId mongoose type`
     );
   }
+
+  let deadline = new Date(deadlineFromServer);
+  
   const result = await Task.create({
     ...req.body,
     board: boardId,

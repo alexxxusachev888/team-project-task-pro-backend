@@ -65,12 +65,13 @@ const login = async (req, res) => {
     avatarURL: user.avatarURL,
     token,
     theme: user.theme,
+    currentBoard: user.currentBoard,
     boards,
   });
 };
 
 const getCurrentUser = async (req, res) => {
-  const { _id, name, email, avatarURL, theme } = req.user;
+  const { _id, name, email, avatarURL, theme, currentBoard } = req.user;
   const boards = await Board.find({ owner: _id });
 
   res.json({
@@ -80,6 +81,7 @@ const getCurrentUser = async (req, res) => {
     avatarURL,
     theme,
     boards,
+    currentBoard,
   });
 };
 
