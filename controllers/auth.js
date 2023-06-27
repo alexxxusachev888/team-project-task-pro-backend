@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const { ctrlWrapper, handleHttpError } = require('../helpers');
-const { User } = require('../models/user');
+const { User, Board } = require('../models');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -57,17 +57,21 @@ const login = async (req, res) => {
   });
   await User.findByIdAndUpdate(user._id, { token });
 
+  const boards = await Board.find({ owner: user._id });
+
   res.json({
     name: user.name,
     email: user.email,
     avatarURL: user.avatarURL,
     token,
     theme: user.theme,
+    boards,
   });
 };
 
 const getCurrentUser = async (req, res) => {
   const { _id, name, email, avatarURL, theme } = req.user;
+  const boards = await Board.find({ owner: _id });
 
   res.json({
     id: _id,
@@ -75,14 +79,13 @@ const getCurrentUser = async (req, res) => {
     email,
     avatarURL,
     theme,
+    boards,
   });
 };
 
 const logout = async (req, res) => {
   const { _id } = req.user;
-
   await User.findByIdAndUpdate(_id, { token: '' });
-
   res.status(204).end();
 };
 
