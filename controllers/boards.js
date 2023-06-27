@@ -35,9 +35,23 @@ const updateBoard = async (req, res) => {
 
 const deleteBoard = async (req, res) => {
   const { id } = req.params;
-  const board = await Board.findByIdAndDelete(id);
 
+  const board = await Board.findById(id);
   if (!board) throw handleHttpError(404, 'Not found');
+
+  const columns = (await Column.find({ board })) || [];
+  const tasks = (await Task.find({ board })) || [];
+
+  columns.forEach(async (column) => {
+    await Column.findByIdAndDelete(column._id);
+  });
+
+  tasks.forEach(async (task) => {
+    await Task.findByIdAndDelete(task._id);
+  });
+
+  await Board.findByIdAndDelete(id);
+
   res.json({ message: 'Board deleted' });
 };
 
@@ -81,6 +95,7 @@ const getCurrentBoard = async (req, res) => {
 
   const columns = (await Column.find({ board }, '-createdAt -updatedAt')) || [];
   const tasks = (await Task.find({ board }, '-createdAt -updatedAt')) || [];
+
   res.status(200).json({ ...lastBoard._doc, columns, tasks });
 };
 
