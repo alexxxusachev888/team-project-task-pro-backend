@@ -1,5 +1,6 @@
 const { ctrlWrapper, handleHttpError } = require('../helpers');
 const { Column } = require('../models');
+const { Task } = require('../models');
 
 const createColumn = async (req, res) => {
   const { boardId } = req.params;
@@ -21,8 +22,16 @@ const updateColumn = async (req, res) => {
 const deleteColumn = async (req, res) => {
   const { id } = req.params;
 
+  const column = await Column.findById(id);
+  if (!column) throw handleHttpError(404, 'Column not found');
+
+  const tasks = (await Task.find({ column })) || [];
+
+  tasks.forEach(async (task) => {
+    await Task.findByIdAndDelete(task._id);
+  });
+
   const deletedColumn = await Column.findByIdAndDelete(id);
-  if (!deletedColumn) throw handleHttpError(404, 'Column not found');
 
   res.json({ message: 'Column deleted' });
 };
