@@ -2,6 +2,14 @@ const { ctrlWrapper, handleHttpError } = require('../helpers');
 const { Column } = require('../models');
 const { Task } = require('../models');
 
+const getColumnsByBoardId = async (req, res) => {
+  const { boardId } = req.params;
+
+  const userColumns = await Column.find({ board: boardId }) || [];
+
+  res.status(201).json(userColumns);
+}
+
 const createColumn = async (req, res) => {
   const { boardId } = req.params;
   const savedColumn = await Column.create({ ...req.body, board: boardId });
@@ -40,4 +48,5 @@ module.exports = {
   createColumn: ctrlWrapper(createColumn),
   updateColumn: ctrlWrapper(updateColumn),
   deleteColumn: ctrlWrapper(deleteColumn),
+  getColumnsByBoardId: ctrlWrapper(getColumnsByBoardId),
 };
