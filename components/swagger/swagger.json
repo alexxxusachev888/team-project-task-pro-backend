@@ -32,6 +32,10 @@
       "description": "Boards endpoints"
     },
     {
+      "name": "Columns",
+      "description": "Columns endpoints"
+    },
+    {
       "name": "Tasks",
       "description": "Tasks endpoints"
     }
@@ -652,6 +656,192 @@
         }
       }
     },
+
+    "/column/{boardId}": {
+      "post": {
+        "tags": ["Columns"],
+        "summary": "create new column",
+        "description": "Користувач створює нову колонку",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "boardId",
+            "in": "path",
+            "description": "ID of the current board\n\n     'boardId' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Column that needs to be added \n\n     'title' - string, required",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/CreateColumn" }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateColumnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/column/{id}": {
+      "patch": {
+        "tags": ["Columns"],
+        "summary": "updateColumn",
+        "description": "Користувач оновлює колонку",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of column that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Column object that needs to be updated \n\n    'title'- string, column title\n\n",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/CreateColumn" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateColumnResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/column/{id} ": {
+      "delete": {
+        "tags": ["Columns"],
+        "summary": "deleteColumn",
+        "description": "Користувач видаляє колонку",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of column that needs to be deleted\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
     "/tasks/{id} ": {
       "get": {
         "tags": ["Tasks"],
@@ -1297,6 +1487,40 @@
             "type": "string",
             "description": "Background ID",
             "example": "1 - optional"
+          }
+        }
+      },
+
+      "CreateColumn": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Column`s title",
+            "example": "Column Title"
+          }
+        }
+      },
+
+      "CreateColumnResponse": {
+        "type": "object",
+        "required": ["title"],
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "Column ID",
+            "example": "6498c7649a32ea75e83dfa35"
+          },
+          "title": {
+            "type": "string",
+            "description": "Column`s title",
+            "example": "Column Title"
+          },
+          "board": {
+            "type": "string",
+            "description": "Column board's id",
+            "example": "649714c3864b736704fe10e5"
           }
         }
       },
