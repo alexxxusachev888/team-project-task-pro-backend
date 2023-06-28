@@ -17,8 +17,7 @@ const {
 } = require('./boards');
 const {
   createColumn,
-  getColumns,
-  getColumnById,
+  getColumnsByBoardId,
   updateColumn,
   deleteColumn,
 } = require('./columns');
@@ -48,8 +47,7 @@ module.exports = {
   updateBoard,
   deleteBoard,
   createColumn,
-  getColumns,
-  getColumnById,
+  getColumnsByBoardId,
   updateColumn,
   deleteColumn,
   createTask,

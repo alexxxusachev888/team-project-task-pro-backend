@@ -38,10 +38,93 @@
     {
       "name": "Tasks",
       "description": "Tasks endpoints"
+    },
+    {
+      "name": "Background",
+      "description": "Background endpoints"
     }
   ],
 
   "paths": {
+    "/background": {
+      "get": {
+        "tags": ["Background"],
+        "summary": "Get all background images",
+        "description": "Fetch all available background images",
+        "responses": {
+          "200": {
+            "description": "List of background images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/background/{id}": {
+      "get": {
+        "tags": ["Background"],
+        "summary": "Get background by ID",
+        "description": "Fetch a specific background image by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the background image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific background image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/users/register": {
       "post": {
         "tags": ["Auth"],
