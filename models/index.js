@@ -8,6 +8,8 @@ const { Column, columnSchemaJoi, columnUpdateSchemaJoi } = require('./column');
 const { Task, taskSchemaJoi, taskUpdateSchemaJoi } = require('./task');
 const { User, userSchemaJoi } = require('./user');
 const { sendEmail, sendEmailSchemaJoi } = require('./sendEmail');
+const { MiniImg, miniImgSchema } = require('./miniImages');
+const { Background, backgroundSchema } = require('./background');
 
 module.exports = {
   Board,
@@ -24,4 +26,8 @@ module.exports = {
   sendEmail,
   sendEmailSchemaJoi,
   taskUpdateSchemaJoi,
+  MiniImg,
+  miniImgSchema,
+  Background,
+  backgroundSchema,
 };

@@ -30,7 +30,10 @@ const {
   deleteTask,
   filterTasksByPriority,
 } = require('./tasks');
+
 const { sendEmail } = require('./sendEmail');
+const { getAllMiniImg, getMiniImgById } = require('./miniImages');
+const { getAllBackground, getBackgroundById } = require('./backgrounds');
 
 module.exports = {
   register,
@@ -58,4 +61,8 @@ module.exports = {
   filterTasksByPriority,
   setCurrentBoard,
   getCurrentBoard,
+  getAllMiniImg,
+  getMiniImgById,
+  getAllBackground,
+  getBackgroundById,
 };
