@@ -13,6 +13,7 @@ const columnRouter = require('./routes/column');
 const taskRouter = require('./routes/task');
 const helpRouter = require('./routes/sendEmail');
 const backgroundRouter = require('./routes/background');
+const miniImagesRouter = require('./routes/miniImages');
 
 app.use(cors());
 app.use(express.json());

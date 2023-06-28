@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
+
 const {
-  getAllminiImages,
-  getMiniImageById,
+  getAllMiniImg,
+  getMiniImgById,
 } = require("../controllers/miniImages");
 const { authenticate } = require("../middlewares");
 
 router.use(authenticate);
 
-router.get("/", getAllminiImages);
-router.get("/:id", getMiniImageById);
+router.get("/", getAllMiniImg);
+router.get("/:id", getMiniImgById);
 
 module.exports = router;
