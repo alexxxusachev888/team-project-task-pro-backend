@@ -453,7 +453,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n",
+            "description": "OK\n\n      Array of boards:\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, id of board`s icon\n\n     'backgroundId' - string, id of board`s background\n\n     'owner' - string (ObjectId), user id\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -519,7 +519,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -644,7 +644,7 @@
         ],
         "responses": {
           "201": {
-            "description": "Response description:\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n     'backgroundId'- string, board background id\n\n     'owner'- string, id власника\n\n    '_id'- string, id дошки",
+            "description": "Response description:\n\n    '_id'- string, board id\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id\n\n    'owner'- string, user id",
             "content": {
               "application/json": {
                 "schema": {
@@ -1024,29 +1024,30 @@
       }
     },
 
-    "/tasks/{id} ": {
+    "/tasks/getById/{id} ": {
       "get": {
         "tags": ["Tasks"],
         "summary": "get task by id",
+        "description": "Receiving a task by its id",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
             "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, ISO format\n\n     'board' - string (ObjectId), the id of the board to which the current column belongs\n\n     'column' - string (ObjectId), the id of the column to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1088,11 +1089,20 @@
         }
       }
     },
-    "/tasks/{boardId}{columnId}": {
+
+    "/tasks/create/{boardId}/{columnId}": {
       "post": {
         "tags": ["Tasks"],
+        "description": "The user creates a new task",
         "summary": "create new task",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "boardId",
             "in": "path",
@@ -1108,23 +1118,16 @@
             "type": "string"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
-            "required": true,
-            "type": "string"
-          },
-          {
             "in": "body",
             "name": "body",
-            "description": "Task object that needs to be added \n\n Опис параметрів запиту: \n\n     'title' - string, required\n\n     'description' - string, required\n\n     'priority' - string, required, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, required\n\n     'board' - string (ObjectId), required\n\n     'column' - string (ObjectId), required\n\n",
+            "description": "Task object that needs to be added \n\n     'title' - string, task title, required\n\n     'description' - string, task description, required\n\n     'priority' - string, required, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, in ISO format, required\n\n     'board' - string (ObjectId), the id of the board to which the current task belongs, required\n\n     'column' - string (ObjectId), the id of the column to which the current task belongs, required",
             "required": true,
             "schema": { "$ref": "#/components/schemas/PostTaskRequest" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "Created\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, in ISO format\n\n     'board' - string (ObjectId), the id of the board to which the current task belongs\n\n     'column' - string (ObjectId), the id of the column to which the current task belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1152,22 +1155,27 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/tasks/{id}": {
+
+    "/tasks/update/{id}": {
       "patch": {
         "tags": ["Tasks"],
         "summary": "update task",
+        "description": "The user updates one or more fields of the current task",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
@@ -1176,16 +1184,23 @@
             "type": "string"
           },
           {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
             "in": "body",
             "name": "body",
-            "description": "Task object that needs to be updated \n\n Опис параметрів запиту: \n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "Task object that needs to be updated \n\n     'title' - string, tasks title, [optional]\n\n     'description' - string, task description, [optional]\n\n     'priority' - string,  value from ['low', 'medium', 'high', 'without'], [optional]\n\n     'deadline' - date, [optional]\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs, [optional]\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs, [optional]\n\n",
             "required": true,
             "schema": { "$ref": "#/components/schemas/PatchTaskRequest" }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, tasks title\n\n     'description' - string, task description\n\n     'priority' - string,  value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1227,22 +1242,24 @@
         }
       }
     },
-    "/tasks/{id}  ": {
+
+    "/tasks/delete/{id}  ": {
       "delete": {
         "tags": ["Tasks"],
         "summary": "delete task",
+        "description": "The user deletes the task",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
             "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
             "required": true,
             "type": "string"
           }
@@ -1284,15 +1301,24 @@
         }
       }
     },
-    "/tasks/{priority}{columnId}": {
+
+    "/tasks/filter/{priority}/{columnId}": {
       "get": {
         "tags": ["Tasks"],
-        "summary": "filtered by 'priority' and 'columnId' property task list",
+        "summary": "filter task list",
+        "description": "The user filters the task list by 'priority'",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "priority",
             "in": "path",
-            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without'] list",
+            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without'] list",
             "required": true,
             "type": "string"
           },
@@ -1302,18 +1328,18 @@
             "description": "'columnId' - property to be filtered by\n\n     'columnId' - string (ObjectId)",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
-            "required": true,
-            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n Масив відфільтрованих об'єктів з наступними полями: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n"
+            "description": "OK\n\n   Array of filtered objects:\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, ISO format\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request",
@@ -1334,10 +1360,21 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
+
     "/miniImages": {
       "get": {
         "tags": ["Mini Background Images"],
