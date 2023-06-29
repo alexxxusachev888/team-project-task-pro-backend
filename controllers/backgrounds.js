@@ -7,7 +7,7 @@ const getAllBackground = async (req, res) => {
 };
 
 const getBackgroundById = async (req, res) => {
-    const { name } = req.body;
+    const { name } = req.params;
     const result = await Background.findOne({name: name});
     if (!result) {
         throw handleHttpError(404, "Background image not found");
