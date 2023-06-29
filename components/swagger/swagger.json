@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Task-Pro API",
-    "description": "Tasks managing API",
+    "description": "Tasks managing API\n\n    Base URL: https://task-pro-app.onrender.com/api",
     "version": "1.0.0"
   },
   "produces": ["application/json"],
@@ -49,212 +49,23 @@
   ],
 
   "paths": {
-    "/miniImages": {
-      "get": {
-        "tags": ["Mini Background Images"],
-        "summary": "Get all mini images",
-        "description": "Fetch all available mini images",
-        "responses": {
-          "200": {
-            "description": "List of mini images",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MiniImageResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/miniImages/{id}": {
-      "get": {
-        "tags": ["Mini Background Images"],
-        "summary": "Get mini image by ID",
-        "description": "Fetch a specific mini image by its ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID of the mini image",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Specific mini image",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MiniImageResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/background": {
-      "get": {
-        "tags": ["Backgrounds"],
-        "summary": "Get all background images",
-        "description": "Fetch all available background images",
-        "responses": {
-          "200": {
-            "description": "List of background images",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BackgroundResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/background/{id}": {
-      "get": {
-        "tags": ["Backgrounds"],
-        "summary": "Get background by ID",
-        "description": "Fetch a specific background image by its ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID of the background image",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Specific background image",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BackgroundResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/users/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
-        "description": "Реєстрація нового аккаунта.\n\n Створюється новий аккаунт і проводиться процедура входа в систему",
-        "parametres": [],
-        "requestBody": {
-          "required": true,
-          "description": "Body description:\n\n 'name'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
-            }
+        "description": "Registration of a new account.\n\n Creates a new account and performes the system login procedure ",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Body description:\n\n    'name'- string, user name or nick - name must be between 8 and 32 characters long\n\n    'email' - string, valid user`s email\n\n    'password' - string, password must be between 8 and 32 characters long",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New user is registered\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'token' - string, token assigned to the user    \n\n    'theme'- string, default value - 'light'\n\n    'avatarURL'- string, a link to the user's avatar, default value - empty string",
             "content": {
               "application/json": {
                 "schema": {
@@ -286,26 +97,24 @@
         }
       }
     },
+
     "/users/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
-        "description": "Вхід в систему існуючого користувача",
-        "parametres": [],
-        "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
+        "description": "Log in to the application of an existing user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Body description:\n\n    'email' - string, valid user`s email\n\n    'password' - string, valid user`s password",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/LoginRequest" }
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New user is registered\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'token' - string, token assigned to the user    \n\n    'theme'- string, default value - 'light'\n\n    'avatarURL'- string, a link to the user's avatar, default value - empty string",
             "content": {
               "application/json": {
                 "schema": {
@@ -324,12 +133,12 @@
               }
             }
           },
-          "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
+          "409": {
+            "description": "Conflict",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                  "$ref": "#/components/schemas/errorConflictResponse"
                 }
               }
             }
@@ -337,26 +146,27 @@
         }
       }
     },
+
     "/users/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out existing user",
-        "description": "Вихід з системи. Знищується токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
-        "parametres": [],
-        "security": [
+        "description": "Sign out. The access token issued during the previous authentication is destroyed.",
+        "parameters": [
           {
-            "Bearer": []
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
           }
         ],
-        "requestBody": {
-          "description": "Sign out user\n\nRequired: Headers Authorization: 'Bearer': token"
-        },
         "responses": {
           "204": {
             "description": "Successful response"
           },
           "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
+            "description": "Unauthorized - email or password is wrong",
             "content": {
               "application/json": {
                 "schema": {
@@ -368,6 +178,7 @@
         }
       }
     },
+
     "/users/current": {
       "get": {
         "tags": ["User"],
@@ -1350,6 +1161,194 @@
           }
         }
       }
+    },
+    "/miniImages": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get all mini images",
+        "description": "Fetch all available mini images",
+        "responses": {
+          "200": {
+            "description": "List of mini images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miniImages/{id}": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get mini image by ID",
+        "description": "Fetch a specific mini image by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the mini image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific mini image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/background": {
+      "get": {
+        "tags": ["Backgrounds"],
+        "summary": "Get all background images",
+        "description": "Fetch all available background images",
+        "responses": {
+          "200": {
+            "description": "List of background images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/background/{id}": {
+      "get": {
+        "tags": ["Backgrounds"],
+        "summary": "Get background by ID",
+        "description": "Fetch a specific background image by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the background image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific background image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1378,6 +1377,7 @@
 
       "AuthResponse": {
         "type": "object",
+        "required": ["name", "email", "token", "avatarURL", "theme"],
         "properties": {
           "name": {
             "type": "string",
@@ -1392,20 +1392,18 @@
           "token": {
             "type": "string",
             "description": "User's token",
-            "example": "token"
+            "example": "6498c7649a32ea75e83dfa35..."
           },
           "avatarURL": {
             "type": "string",
             "description": "User's avatarURL",
             "example": "avatarURL.jpg"
+          },
+          "theme": {
+            "type": "string",
+            "description": "User's theme",
+            "example": "light"
           }
-        },
-        "required": ["name", "email", "token", "avatarURL"],
-        "example": {
-          "name": "User name",
-          "email": "example@gmail.com",
-          "token": "token",
-          "avatarURL": "avatarURL.jpg"
         }
       },
 
