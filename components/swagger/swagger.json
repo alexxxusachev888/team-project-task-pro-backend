@@ -437,11 +437,11 @@
       }
     },
 
-    "/board": {
+    "/board/getAll": {
       "get": {
         "tags": ["Boards"],
         "summary": "getAllBoards",
-        "description": "Користувач отримує масив всіх дошок або пустий масив, якщо такі відсутні",
+        "description": "The user receives an array of all boards or an empty array if there are none",
         "parameters": [
           {
             "name": "Authorization",
@@ -453,7 +453,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -495,11 +495,12 @@
         }
       }
     },
+
     "/board/getById/{id}": {
       "get": {
         "tags": ["Boards"],
         "summary": "getBoardByID",
-        "description": "Користувач отримує дошку по id",
+        "description": "Receiving a board by its id",
         "parameters": [
           {
             "name": "Authorization",
@@ -518,7 +519,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -560,11 +561,12 @@
         }
       }
     },
+
     "/board/getCurrent": {
       "get": {
         "tags": ["Boards"],
         "summary": "getCurrent",
-        "description": "Користувач отримує останню дошку, з якою працював",
+        "description": "The user receives the last board with which he worked",
         "parameters": [
           {
             "name": "Authorization",
@@ -576,7 +578,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -618,11 +620,12 @@
         }
       }
     },
+
     "/board/create": {
       "post": {
         "tags": ["Boards"],
         "summary": "createBoard",
-        "description": "Користувач створює нову робочу дошку",
+        "description": "The user creates a new board",
         "parameters": [
           {
             "name": "Authorization",
@@ -634,14 +637,14 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Body description: \n\n    '_id' - string (ObjectId)\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id",
+            "description": "Body description:\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id",
             "required": true,
             "schema": { "$ref": "#/components/schemas/CreateBoard" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Response description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id\n\n 'owner'- string, id власника\n\n '_id'- string, id дошки",
+            "description": "Response description:\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n     'backgroundId'- string, board background id\n\n     'owner'- string, id власника\n\n    '_id'- string, id дошки",
             "content": {
               "application/json": {
                 "schema": {
@@ -669,10 +672,21 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
+
     "/board/update/{id}": {
       "patch": {
         "tags": ["Boards"],
@@ -703,7 +717,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -745,11 +759,12 @@
         }
       }
     },
+
     "/board/delete/{id}": {
       "delete": {
         "tags": ["Boards"],
         "summary": "deleteBoard",
-        "description": "Користувач видаляє робочу дошку",
+        "description": "The user deletes the board",
         "parameters": [
           {
             "name": "Authorization",
@@ -1752,11 +1767,6 @@
         "type": "object",
         "required": ["title"],
         "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Board ID",
-            "example": "649716d4000e004dc6510753"
-          },
           "title": {
             "type": "string",
             "description": "Board`s title",
