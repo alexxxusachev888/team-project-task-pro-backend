@@ -819,11 +819,11 @@
       }
     },
 
-    "/column/{boardId}": {
+    "/column/create/{boardId}": {
       "post": {
         "tags": ["Columns"],
         "summary": "create new column",
-        "description": "Користувач створює нову колонку",
+        "description": "The user creates a new column",
         "parameters": [
           {
             "name": "Authorization",
@@ -842,14 +842,14 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Column that needs to be added \n\n     'title' - string, required",
+            "description": "Column that needs to be added \n\n     'title' - string, required, column title",
             "required": true,
             "schema": { "$ref": "#/components/schemas/CreateColumn" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "description": "Created\n\n    '_id' - string (ObjectId), new column id\n\n    'title' - string, column title \n\n    'board' - string (ObjectId), the id of the board to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -877,16 +877,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
 
-    "/column/{id}": {
+    "/column/update/{id}": {
       "patch": {
         "tags": ["Columns"],
         "summary": "updateColumn",
-        "description": "Користувач оновлює колонку",
+        "description": "The user updates the title of the current column",
         "parameters": [
           {
             "name": "Authorization",
@@ -912,7 +922,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "description": "OK\n\n    '_id' - string (ObjectId), column id\n\n    'title' - string, new column title \n\n    'board' - string (ObjectId), the id of the board to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -940,16 +950,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
 
-    "/column/{id} ": {
+    "/column/delete/{id} ": {
       "delete": {
         "tags": ["Columns"],
         "summary": "deleteColumn",
-        "description": "Користувач видаляє колонку",
+        "description": "The user deletes the column",
         "parameters": [
           {
             "name": "Authorization",
