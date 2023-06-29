@@ -57,7 +57,7 @@
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "Body",
             "description": "Body description:\n\n    'name'- string, user name or nick - name must be between 8 and 32 characters long\n\n    'email' - string, valid user`s email\n\n    'password' - string, password must be between 8 and 32 characters long",
             "required": true,
             "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
@@ -84,6 +84,26 @@
               }
             }
           },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
           "409": {
             "description": "Conflict",
             "content": {
@@ -106,7 +126,7 @@
         "parameters": [
           {
             "in": "body",
-            "name": "body",
+            "name": "Body",
             "description": "Body description:\n\n    'email' - string, valid user`s email\n\n    'password' - string, valid user`s password",
             "required": true,
             "schema": { "$ref": "#/components/schemas/LoginRequest" }
@@ -129,6 +149,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -165,12 +205,32 @@
           "204": {
             "description": "Successful response"
           },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
           "401": {
-            "description": "Unauthorized - email or password is wrong",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -183,16 +243,34 @@
       "get": {
         "tags": ["User"],
         "summary": "Get current user",
-        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Параметри: відсутні\n\n  Опис: Коли користувач перезавантажує сторінку, він робить запит на сервер з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен не є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен є валідним, то сесія користувача продовжується.",
-        "parametres": [],
+        "description": "Obtaining information about the current authorized user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
         "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Successful response\n\n    'id' - string, user's id\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'avatarURL'- string, a link to the user's avatar\n\n    'theme' - string, user theme\n\n    'currentBoard' - string, id of the last board that the user used",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/currentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
                 }
               }
             }
@@ -203,6 +281,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -210,24 +298,33 @@
         }
       }
     },
-    "/users/": {
+
+    "/users/update": {
       "patch": {
         "tags": ["User"],
         "summary": "Update current user",
-        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача.\n\n Параметри: ім'я та/або пошта та/або кольорова тема \n\n Користувач має бути авторизований",
-        "parametres": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'email' - string, valid user`s email [optional]\n\n'password' - string, довжина 8 - 64 символа [optional]\n\n'theme' - string, поточна тема користувача [optional]",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
-              }
-            }
+        "description": "Updates one or more fields in the profile of the currently authorized user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "Body",
+            "description": "Body description:\n\n    'name'- string [optional], user name or nick - name must be between 8 and 32 characters long\n\n    'email' - string [optional], valid user`s email\n\n    'password' - string [optional], password must be between 8 and 32 characters long",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
           }
-        },
+        ],
+        "security": [
+          {
+            "Bearer": []
+          }
+        ],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -239,12 +336,32 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -256,21 +373,25 @@
     "/users/avatar": {
       "patch": {
         "tags": ["User"],
-        "summary": "Update current user`s avatar",
-        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача. \n\n Користувач має бути авторизований",
-        "parametres": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'avatar' - string, format .jpg or .png",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateAvatar"
-              }
-            }
+        "summary": "Update avatar",
+        "description": "Update current user`s avatar",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "eader",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Board object that needs to be updated\n\n     'avatar' - string, format .jpg or .png",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/UpdateAvatar" }
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -282,12 +403,32 @@
               }
             }
           },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
           "401": {
             "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -536,7 +677,7 @@
       "patch": {
         "tags": ["Boards"],
         "summary": "updateBoard",
-        "description": "Користувач оновлює робочу дошку",
+        "description": "The user updates one or more fields of the current board",
         "parameters": [
           {
             "name": "Authorization",
@@ -1431,12 +1572,12 @@
           "id": {
             "type": "string",
             "description": "User's id",
-            "example": "123456"
+            "example": "6498c7649a32ea75e83dfa35"
           },
           "name": {
             "type": "string",
             "description": "User's name",
-            "example": "User"
+            "example": "User Name"
           },
           "email": {
             "type": "string",
@@ -1448,12 +1589,16 @@
             "description": "User's img",
             "format": "URL"
           },
-
           "theme": {
             "type": "string",
             "description": "User's theme",
             "enum": ["light", "dark", "Violet"],
             "example": "light"
+          },
+          "currentBoard": {
+            "type": "string",
+            "description": "User's current board id",
+            "example": "6498c7649a32ea75e83dfa35"
           }
         }
       },
