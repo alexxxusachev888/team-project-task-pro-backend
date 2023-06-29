@@ -1,21 +1,15 @@
-[{
-  "name": "mini-Image-1",
-  "image": {
-    "regular": "https://res.cloudinary.com/duuziycym/image/upload/v1687963604/backgrounds/image-1-28x28_qpfmpc.png",
-    "retina": "https://res.cloudinary.com/duuziycym/image/upload/v1687963741/backgrounds/image-1-28x28-x2_b9upni.png"
-  }
-},
 {
-  "name": "mini-Image-3",
-  "image": {
-    "regular": "https://res.cloudinary.com/duuziycym/image/upload/v1687963604/backgrounds/image-3-28x28_lmrqln.png",
-    "retina": "https://res.cloudinary.com/duuziycym/image/upload/v1687963741/backgrounds/image-2-28x28-x2_dw4qqz.png"
-  }
-},
-{
-  "name": "mini-Image-2",
-  "image": {
-    "regular": "https://res.cloudinary.com/duuziycym/image/upload/v1687963604/backgrounds/image-2-28x28_rcvxca.png",
-    "retina": "https://res.cloudinary.com/duuziycym/image/upload/v1687963741/backgrounds/image-3-28x28-x2_gypdpu.png"
-  }
-}]
+  "name":"default",
+  "desktop": {
+    "regular": "",
+    "retina": ""
+  },
+  "tablet": {
+     "regular": "",
+    "retina": ""
+  },
+  "mobile": {
+     "regular": "",
+    "retina": ""
+  } 
+}

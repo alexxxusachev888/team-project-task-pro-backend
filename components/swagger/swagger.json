@@ -3,7 +3,6 @@
   "info": {
     "title": "Task-Pro API",
     "description": "Tasks managing API",
-
     "version": "1.0.0"
   },
   "produces": ["application/json"],
@@ -40,15 +39,118 @@
       "description": "Tasks endpoints"
     },
     {
-      "name": "Background",
+      "name": "Backgrounds",
+      "description": "Background endpoints"
+    },
+    {
+      "name": "Mini Background Images",
       "description": "Background endpoints"
     }
   ],
 
   "paths": {
+    "/miniImages": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get all mini images",
+        "description": "Fetch all available mini images",
+        "responses": {
+          "200": {
+            "description": "List of mini images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/miniImages/{id}": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get mini image by ID",
+        "description": "Fetch a specific mini image by its ID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the mini image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific mini image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/background": {
       "get": {
-        "tags": ["Background"],
+        "tags": ["Backgrounds"],
         "summary": "Get all background images",
         "description": "Fetch all available background images",
         "responses": {
@@ -58,6 +160,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -77,7 +189,7 @@
     },
     "/background/{id}": {
       "get": {
-        "tags": ["Background"],
+        "tags": ["Backgrounds"],
         "summary": "Get background by ID",
         "description": "Fetch a specific background image by its ID",
         "parameters": [
@@ -1724,6 +1836,63 @@
         }
       },
 
+      "BackgroundResponse": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the background image",
+            "example": "Image-1"
+          },
+          "desktop": {
+            "type": "object",
+            "properties": {
+              "regular": {
+                "type": "string",
+                "description": "The regular desktop image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687447979/backgrounds_img/image1_q73vua.jpg"
+              },
+              "retina": {
+                "type": "string",
+                "description": "The retina desktop image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687471238/backgrounds-retina_img/dtimg1_nst090.jpg"
+              }
+            }
+          },
+          "tablet": {
+            "type": "object",
+            "properties": {
+              "regular": {
+                "type": "string",
+                "description": "The regular tablet image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687449131/backgrounds_img/image23_bd7fak.jpg"
+              },
+              "retina": {
+                "type": "string",
+                "description": "The retina tablet image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687471431/backgrounds-retina_img/tablet-img/diego-ph-wyeapf7Gy-U-unsplash_18_xxaszo.jpg"
+              }
+            }
+          },
+          "mobile": {
+            "type": "object",
+            "properties": {
+              "regular": {
+                "type": "string",
+                "description": "The regular mobile image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687449168/backgrounds_img/image38_ymbpah.jpg"
+              },
+              "retina": {
+                "type": "string",
+                "description": "The retina mobile image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687471500/backgrounds-retina_img/mobi-img/diego-ph-wyeapf7Gy-U-unsplash_33_squ45h.jpg"
+              }
+            }
+          }
+        },
+        "required": ["name", "desktop", "tablet", "mobile"]
+      },
+
       "errorBadRequestResponse": {
         "type": "object",
         "properties": {
@@ -1787,6 +1956,23 @@
         }
       },
 
+      "errorServerResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "Error status code",
+            "example": "500"
+          },
+          "message": {
+            "type": "string",
+            "description": "Server error",
+            "example": "Internal Server Error"
+          }
+        },
+        "required": ["error"]
+      },
+
       "errorConflictResponse": {
         "type": "object",
         "properties": {
@@ -1801,6 +1987,39 @@
             "example": "Email is already in use"
           }
         }
+      },
+
+      "MiniImageResponse": {
+        "type": "object",
+        "properties": {
+          "_id": {
+            "type": "string",
+            "description": "The auto-generated ID of the mini image",
+            "example": "649cad6d73705e8ee6425090"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the mini image",
+            "example": "Image-1"
+          },
+          "image": {
+            "type": "object",
+            "properties": {
+              "regular": {
+                "type": "string",
+                "description": "The regular resolution image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687981867/mini-pictures/miniImg-1_icaljf.jpg"
+              },
+              "retina": {
+                "type": "string",
+                "description": "The retina resolution image URL",
+                "example": "https://res.cloudinary.com/dg2fte8tf/image/upload/v1687981967/mini-pictures-retina/miniImg-ret-1_kpreuq.jpg"
+              }
+            },
+            "description": "The image types (regular, retina)"
+          }
+        },
+        "required": ["_id", "name", "image"]
       }
     },
 
