@@ -6,6 +6,6 @@ const {authenticate} = require('../middlewares');
 router.use(authenticate);
 
 router.get('/', getAllBackground);
-router.get('/:id', getBackgroundById);
+router.get('/:name', getBackgroundById);
 
 module.exports = router;
