@@ -1,11 +1,11 @@
-const nodemailer = require("nodemailer");
+const nodemailer = require('nodemailer');
 
-const { User } = require("../models/user");
+const { User } = require('../models/user');
 
-const { ctrlWrapper, handleHttpError } = require("../helpers");
+const { ctrlWrapper, handleHttpError } = require('../helpers');
 
 const config = {
-  host: "smtp.ukr.net",
+  host: 'smtp.ukr.net',
   port: 465,
   secure: true,
   auth: {
@@ -20,21 +20,21 @@ const sendEmail = async (req, res) => {
   const { email, comment } = req.body;
 
   const user = await User.findOne({ email });
-  if (!user) throw handleHttpError(401, "Email or password is wrong");
+  if (!user) throw handleHttpError(401, 'Email or password is wrong');
 
   const mailOptions = {
     from: process.env.UKR_NET_EMAIL, // Ваш електронний адрес
-    to: "vitalik.nozhenko@gmail.com", // електронний адрес кому відправляємо
-    subject: "Допомога",
-    text: ` ${comment} \n\nЕлектронна пошта для відповіді:  ${email}`,
+    to: 'vitalik.nozhenko@gmail.com', // електронний адрес кому відправляємо
+    subject: 'Help',
+    text: `${comment}\n\nUser email to response: ${email}`,
   };
 
   await transporter.sendMail(mailOptions);
-  console.log("Лист успішно відправлено");
+  console.log('Message sent successfully');
   res.status(200).json({
     email: email,
     success: true,
-    message: "Лист успішно відправлено",
+    message: 'Message sent successfully',
   });
 };
 
