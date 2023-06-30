@@ -45,6 +45,10 @@
     {
       "name": "Mini Background Images",
       "description": "Background miniImages endpoints"
+    },
+    {
+      "name": "Help",
+      "description": "Help email endpoint"
     }
   ],
 
@@ -1667,6 +1671,72 @@
           }
         }
       }
+    },
+
+    "/help": {
+      "post": {
+        "tags": ["Help"],
+        "summary": "Send email",
+        "description": "User sends an email to help center",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "Body",
+            "description": "Body description:\n\n    'email' - string, valid user`s email\n\n    'comment' - string, user`s comment",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/sendHelp" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK\n\n    'email' - string, user email\n\n    'message'- string, Message sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/sendHelpSuccess"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -1779,6 +1849,7 @@
           }
         }
       },
+
       "UpdateAvatar": {
         "type": "object",
         "required": ["avatarimage"],
@@ -1790,6 +1861,7 @@
           }
         }
       },
+
       "UpdateAvatarResponse": {
         "type": "object",
         "required": ["avatarimage"],
@@ -2255,6 +2327,7 @@
           }
         }
       },
+
       "errorNotFoundTaskResponse": {
         "type": "object",
         "properties": {
@@ -2335,6 +2408,40 @@
           }
         },
         "required": ["_id", "name", "image"]
+      },
+
+      "sendHelp": {
+        "type": "object",
+        "required": ["email", "comment"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "comment": {
+            "type": "string",
+            "description": "User's comment",
+            "example": "User's comments or requests"
+          }
+        }
+      },
+
+      "sendHelpSuccess": {
+        "type": "object",
+        "required": ["email", "message"],
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "User's email",
+            "format": "email"
+          },
+          "message": {
+            "type": "string",
+            "description": "Success message",
+            "example": "Message sent successfully"
+          }
+        }
       }
     },
 
