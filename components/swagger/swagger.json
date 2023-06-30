@@ -2,7 +2,7 @@
   "openapi": "3.0.1",
   "info": {
     "title": "Task-Pro API",
-    "description": "Tasks managing API",
+    "description": "Tasks managing API\n\n    Base URL: https://task-pro-app.onrender.com/api",
     "version": "1.0.0"
   },
   "produces": ["application/json"],
@@ -44,217 +44,28 @@
     },
     {
       "name": "Mini Background Images",
-      "description": "Background endpoints"
+      "description": "Background miniImages endpoints"
     }
   ],
 
   "paths": {
-    "/miniImages": {
-      "get": {
-        "tags": ["Mini Background Images"],
-        "summary": "Get all mini images",
-        "description": "Fetch all available mini images",
-        "responses": {
-          "200": {
-            "description": "List of mini images",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MiniImageResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/miniImages/{id}": {
-      "get": {
-        "tags": ["Mini Background Images"],
-        "summary": "Get mini image by ID",
-        "description": "Fetch a specific mini image by its ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID of the mini image",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Specific mini image",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MiniImageResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Unauthorized",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/background": {
-      "get": {
-        "tags": ["Backgrounds"],
-        "summary": "Get all background images",
-        "description": "Fetch all available background images",
-        "responses": {
-          "200": {
-            "description": "List of background images",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BackgroundResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/background/{id}": {
-      "get": {
-        "tags": ["Backgrounds"],
-        "summary": "Get background by ID",
-        "description": "Fetch a specific background image by its ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "ID of the background image",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Specific background image",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/BackgroundResponse"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorNotFoundResponse"
-                }
-              }
-            }
-          },
-          "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorServerResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "/users/register": {
       "post": {
         "tags": ["Auth"],
         "summary": "User registration",
-        "description": "Реєстрація нового аккаунта.\n\n Створюється новий аккаунт і проводиться процедура входа в систему",
-        "parametres": [],
-        "requestBody": {
-          "required": true,
-          "description": "Body description:\n\n 'name'- string, user name or nick\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
-          "content": {
-            "application/json": {
-              "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
-            }
+        "description": "Registration of a new account.\n\n Creates a new account and performes the system login procedure ",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Body",
+            "description": "Body description:\n\n    'name'- string, user name or nick - name must be between 8 and 32 characters long\n\n    'email' - string, valid user`s email\n\n    'password' - string, password must be between 8 and 32 characters long",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "New User Registered\n\n Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New user is registered\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'token' - string, token assigned to the user    \n\n    'theme'- string, default value - 'light'\n\n    'avatarURL'- string, a link to the user's avatar, default value - empty string",
             "content": {
               "application/json": {
                 "schema": {
@@ -269,6 +80,26 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -286,26 +117,24 @@
         }
       }
     },
+
     "/users/login": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign in existing user",
-        "description": "Вхід в систему існуючого користувача",
-        "parametres": [],
-        "requestBody": {
-          "description": "Body description:\n\n'email' - string, valid user`s email\n\n'password' - string, довжина 8 - 64 символа",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/LoginRequest"
-              }
-            }
+        "description": "Log in to the application of an existing user",
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Body",
+            "description": "Body description:\n\n    'email' - string, valid user`s email\n\n    'password' - string, valid user`s password",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/LoginRequest" }
           }
-        },
+        ],
         "responses": {
           "201": {
-            "description": "Опис параметрів відповіді:\n\n 'name' - string, ім'я користувача.\n\n 'email' - string, електронна пошта користувача.\n\n 'token' - string, token користувача.\n\n 'avatarURL' - string, посилання на аватар користувача.",
+            "description": "New user is registered\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'token' - string, token assigned to the user    \n\n    'theme'- string, default value - 'light'\n\n    'avatarURL'- string, a link to the user's avatar, default value - empty string",
             "content": {
               "application/json": {
                 "schema": {
@@ -325,7 +154,7 @@
             }
           },
           "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
+            "description": "Unauthorized",
             "content": {
               "application/json": {
                 "schema": {
@@ -333,48 +162,169 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorConflictResponse"
+                }
+              }
+            }
           }
         }
       }
     },
+
     "/users/logout": {
       "post": {
         "tags": ["Auth"],
         "summary": "Sign out existing user",
-        "description": "Вихід з системи. Знищується токен доступу, що був виданий при попередній аутентифікації.\n\nОпис: Сервер перевіряє валідність токена, якщо токен є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен не є валідним, то сервер повертає статус 401 і повідомляє про невалідність токена.",
-        "parametres": [],
+        "description": "Sign out. The access token issued during the previous authentication is destroyed.",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/current": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Get current user",
+        "description": "Obtaining information about the current authorized user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "security": [{ "Bearer": [] }],
+        "responses": {
+          "200": {
+            "description": "Successful response\n\n    'id' - string, user's id\n\n    'name' - string, user name\n\n    'email' - string, user email\n\n    'avatarURL'- string, a link to the user's avatar\n\n    'theme' - string, user theme\n\n    'currentBoard' - string, id of the last board that the user used",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/currentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/users/update": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Update current user",
+        "description": "Updates one or more fields in the profile of the currently authorized user",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "Body",
+            "description": "Body description:\n\n    'name'- string [optional], user name or nick - name must be between 8 and 32 characters long\n\n    'email' - string [optional], valid user`s email\n\n    'password' - string [optional], password must be between 8 and 32 characters long",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/RegistrationRequest" }
+          }
+        ],
         "security": [
           {
             "Bearer": []
           }
         ],
-        "requestBody": {
-          "description": "Sign out user\n\nRequired: Headers Authorization: 'Bearer': token"
-        },
-        "responses": {
-          "204": {
-            "description": "Successful response"
-          },
-          "401": {
-            "description": "Unauthorized \n\n Email or password is wrong",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/users/current": {
-      "get": {
-        "tags": ["User"],
-        "summary": "Get current user",
-        "description": "Ендпоінт 'current' використовується для отримання інформації про поточного авторизованого користувача.\n\n Параметри: відсутні\n\n  Опис: Коли користувач перезавантажує сторінку, він робить запит на сервер з валідним токеном у заголовку Authorization. Сервер перевіряє валідність токена, якщо токен не є дійсним, то сесія користувача закривається, токен видаляється і користувач повертається на сторінку входу в систему. Якщо токен є валідним, то сесія користувача продовжується.",
-        "parametres": [],
-        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -382,6 +332,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/currentResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
                 }
               }
             }
@@ -395,45 +355,13 @@
                 }
               }
             }
-          }
-        }
-      }
-    },
-    "/users/": {
-      "patch": {
-        "tags": ["User"],
-        "summary": "Update current user",
-        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача.\n\n Параметри: ім'я та/або пошта та/або кольорова тема \n\n Користувач має бути авторизований",
-        "parametres": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'email' - string, valid user`s email [optional]\n\n'password' - string, довжина 8 - 64 символа [optional]\n\n'theme' - string, поточна тема користувача [optional]",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/RegistrationRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Successful response",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/currentResponse"
-                }
-              }
-            }
           },
-          "401": {
-            "description": "Unauthorized",
+          "404": {
+            "description": "Not Found",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
                 }
               }
             }
@@ -445,21 +373,25 @@
     "/users/avatar": {
       "patch": {
         "tags": ["User"],
-        "summary": "Update current user`s avatar",
-        "description": "Ендпоінт використовується для оновлення інформації в профілі поточного авторизованого користувача. \n\n Користувач має бути авторизований",
-        "parametres": [],
-        "security": [{ "Bearer": [] }],
-        "requestBody": {
-          "description": "Body description:\n\nRequired: Headers Authorization: 'Bearer': token \n\n'avatar' - string, format .jpg or .png",
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/UpdateAvatar"
-              }
-            }
+        "summary": "Update avatar",
+        "description": "Update current user`s avatar",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "eader",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Board object that needs to be updated\n\n     'avatar' - string, format .jpg or .png",
+            "required": true,
+            "schema": { "$ref": "#/components/schemas/UpdateAvatar" }
           }
-        },
+        ],
+        "security": [{ "Bearer": [] }],
         "responses": {
           "200": {
             "description": "Successful response",
@@ -467,6 +399,16 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/UpdateAvatarResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
                 }
               }
             }
@@ -480,16 +422,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
 
-    "/board": {
+    "/board/getAll": {
       "get": {
         "tags": ["Boards"],
         "summary": "getAllBoards",
-        "description": "Користувач отримує масив всіх дошок або пустий масив, якщо такі відсутні",
+        "description": "The user receives an array of all boards or an empty array if there are none",
         "parameters": [
           {
             "name": "Authorization",
@@ -501,7 +453,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n",
+            "description": "OK\n\n      Array of boards:\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, id of board`s icon\n\n     'backgroundId' - string, id of board`s background\n\n     'owner' - string (ObjectId), user id\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -543,11 +495,12 @@
         }
       }
     },
+
     "/board/getById/{id}": {
       "get": {
         "tags": ["Boards"],
         "summary": "getBoardByID",
-        "description": "Користувач отримує дошку по id",
+        "description": "Receiving a board by its id",
         "parameters": [
           {
             "name": "Authorization",
@@ -566,7 +519,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -608,11 +561,12 @@
         }
       }
     },
+
     "/board/getCurrent": {
       "get": {
         "tags": ["Boards"],
         "summary": "getCurrent",
-        "description": "Користувач отримує останню дошку, з якою працював",
+        "description": "The user receives the last board with which he worked",
         "parameters": [
           {
             "name": "Authorization",
@@ -624,7 +578,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -666,11 +620,12 @@
         }
       }
     },
+
     "/board/create": {
       "post": {
         "tags": ["Boards"],
         "summary": "createBoard",
-        "description": "Користувач створює нову робочу дошку",
+        "description": "The user creates a new board",
         "parameters": [
           {
             "name": "Authorization",
@@ -682,14 +637,14 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Body description: \n\n    '_id' - string (ObjectId)\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id",
+            "description": "Body description:\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id",
             "required": true,
             "schema": { "$ref": "#/components/schemas/CreateBoard" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Response description:\n\n 'title'- string, board title\n\n 'iconId'- string, board icon id\n\n 'backgroundId'- string, board background id\n\n 'owner'- string, id власника\n\n '_id'- string, id дошки",
+            "description": "Response description:\n\n    '_id'- string, board id\n\n    'title'- string, board title\n\n    'iconId'- string, board icon id\n\n    'backgroundId'- string, board background id\n\n    'owner'- string, user id",
             "content": {
               "application/json": {
                 "schema": {
@@ -717,15 +672,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
+
     "/board/update/{id}": {
       "patch": {
         "tags": ["Boards"],
         "summary": "updateBoard",
-        "description": "Користувач оновлює робочу дошку",
+        "description": "The user updates one or more fields of the current board",
         "parameters": [
           {
             "name": "Authorization",
@@ -751,7 +717,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'iconId' - string\n\n     'backgroundId' - string\n\n     'owner' - string (ObjectId)\n\n        Array of column objects\n\n     '_id' - string (ObjectId)\n\n     'title' - string, optional\n\n     'board' - string (ObjectId)\n\n         Array of task objects\n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), board id\n\n     'title' - string, board title\n\n     'iconId' - string, icon id assigned to current board\n\n     'backgroundId' - string, background id assigned to current board\n\n     'owner' - string (ObjectId), user id\n\n        Array of column objects\n\n     'columns':\n\n        '_id' - string (ObjectId), column id\n\n        'title' - string, column title id\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs\n\n         Array of task objects\n\n     'tasks':\n\n         'title' - string, task title\n\n        'description' - string, task description\n\n        'priority' - string, optional, value from ['low', 'medium', 'high', 'without']\n\n        'deadline' - date, ISO format\n\n         'board' - string (ObjectId), the id of the board to which the current column belongs, optional\n\n        'column' - string (ObjectId), the id of the column to which the current column belongs\n\n",
             "content": {
               "application/json": {
                 "schema": {
@@ -793,11 +759,12 @@
         }
       }
     },
+
     "/board/delete/{id}": {
       "delete": {
         "tags": ["Boards"],
         "summary": "deleteBoard",
-        "description": "Користувач видаляє робочу дошку",
+        "description": "The user deletes the board",
         "parameters": [
           {
             "name": "Authorization",
@@ -852,11 +819,11 @@
       }
     },
 
-    "/column/{boardId}": {
+    "/column/create/{boardId}": {
       "post": {
         "tags": ["Columns"],
         "summary": "create new column",
-        "description": "Користувач створює нову колонку",
+        "description": "The user creates a new column",
         "parameters": [
           {
             "name": "Authorization",
@@ -875,14 +842,14 @@
           {
             "in": "body",
             "name": "body",
-            "description": "Column that needs to be added \n\n     'title' - string, required",
+            "description": "Column that needs to be added \n\n     'title' - string, required, column title",
             "required": true,
             "schema": { "$ref": "#/components/schemas/CreateColumn" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "description": "Created\n\n    '_id' - string (ObjectId), new column id\n\n    'title' - string, column title \n\n    'board' - string (ObjectId), the id of the board to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -910,16 +877,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
 
-    "/column/{id}": {
+    "/column/update/{id}": {
       "patch": {
         "tags": ["Columns"],
         "summary": "updateColumn",
-        "description": "Користувач оновлює колонку",
+        "description": "The user updates the title of the current column",
         "parameters": [
           {
             "name": "Authorization",
@@ -945,7 +922,7 @@
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n      '_id' - string (ObjectId)\n\n     'title' - string\n\n     'board' - string (ObjectId)\n\n",
+            "description": "OK\n\n    '_id' - string (ObjectId), column id\n\n    'title' - string, new column title \n\n    'board' - string (ObjectId), the id of the board to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -973,16 +950,26 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
 
-    "/column/{id} ": {
+    "/column/delete/{id} ": {
       "delete": {
         "tags": ["Columns"],
         "summary": "deleteColumn",
-        "description": "Користувач видаляє колонку",
+        "description": "The user deletes the column",
         "parameters": [
           {
             "name": "Authorization",
@@ -1037,29 +1024,30 @@
       }
     },
 
-    "/tasks/{id} ": {
+    "/tasks/getById/{id} ": {
       "get": {
         "tags": ["Tasks"],
         "summary": "get task by id",
+        "description": "Receiving a task by its id",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
             "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
             "required": true,
             "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be fetched\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "OK\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, ISO format\n\n     'board' - string (ObjectId), the id of the board to which the current column belongs\n\n     'column' - string (ObjectId), the id of the column to which the current column belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1101,11 +1089,20 @@
         }
       }
     },
-    "/tasks/{boardId}{columnId}": {
+
+    "/tasks/create/{boardId}/{columnId}": {
       "post": {
         "tags": ["Tasks"],
+        "description": "The user creates a new task",
         "summary": "create new task",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "boardId",
             "in": "path",
@@ -1121,23 +1118,16 @@
             "type": "string"
           },
           {
-            "name": "Authorization",
-            "in": "header",
-            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
-            "required": true,
-            "type": "string"
-          },
-          {
             "in": "body",
             "name": "body",
-            "description": "Task object that needs to be added \n\n Опис параметрів запиту: \n\n     'title' - string, required\n\n     'description' - string, required\n\n     'priority' - string, required, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, required\n\n     'board' - string (ObjectId), required\n\n     'column' - string (ObjectId), required\n\n",
+            "description": "Task object that needs to be added \n\n     'title' - string, task title, required\n\n     'description' - string, task description, required\n\n     'priority' - string, required, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, in ISO format, required\n\n     'board' - string (ObjectId), the id of the board to which the current task belongs, required\n\n     'column' - string (ObjectId), the id of the column to which the current task belongs, required",
             "required": true,
             "schema": { "$ref": "#/components/schemas/PostTaskRequest" }
           }
         ],
         "responses": {
           "201": {
-            "description": "Created\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "Created\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, in ISO format\n\n     'board' - string (ObjectId), the id of the board to which the current task belongs\n\n     'column' - string (ObjectId), the id of the column to which the current task belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1165,22 +1155,27 @@
                 }
               }
             }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
           }
         }
       }
     },
-    "/tasks/{id}": {
+
+    "/tasks/update/{id}": {
       "patch": {
         "tags": ["Tasks"],
         "summary": "update task",
+        "description": "The user updates one or more fields of the current task",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
@@ -1189,16 +1184,23 @@
             "type": "string"
           },
           {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be updated\n\n     'id' - string (ObjectId)",
+            "required": true,
+            "type": "string"
+          },
+          {
             "in": "body",
             "name": "body",
-            "description": "Task object that needs to be updated \n\n Опис параметрів запиту: \n\n     'title' - string, optional\n\n     'description' - string, optional\n\n     'priority' - string, optional, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date, optional\n\n     'board' - string (ObjectId), optional\n\n     'column' - string (ObjectId), optional\n\n",
+            "description": "Task object that needs to be updated \n\n     'title' - string, tasks title, [optional]\n\n     'description' - string, task description, [optional]\n\n     'priority' - string,  value from ['low', 'medium', 'high', 'without'], [optional]\n\n     'deadline' - date, [optional]\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs, [optional]\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs, [optional]\n\n",
             "required": true,
             "schema": { "$ref": "#/components/schemas/PatchTaskRequest" }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n",
+            "description": "OK\n\n Опис параметрів відповіді: \n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, tasks title\n\n     'description' - string, task description\n\n     'priority' - string,  value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs",
             "content": {
               "application/json": {
                 "schema": {
@@ -1240,22 +1242,24 @@
         }
       }
     },
-    "/tasks/{id}  ": {
+
+    "/tasks/delete/{id}  ": {
       "delete": {
         "tags": ["Tasks"],
         "summary": "delete task",
+        "description": "The user deletes the task",
         "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
-            "required": true,
-            "type": "string"
-          },
           {
             "name": "Authorization",
             "in": "header",
             "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of task that needs to be deleted\n\n     'id' - string (ObjectId)",
             "required": true,
             "type": "string"
           }
@@ -1297,15 +1301,24 @@
         }
       }
     },
-    "/tasks/{priority}{columnId}": {
+
+    "/tasks/filter/{priority}/{columnId}": {
       "get": {
         "tags": ["Tasks"],
-        "summary": "filtered by 'priority' and 'columnId' property task list",
+        "summary": "filter task list",
+        "description": "The user filters the task list by 'priority'",
         "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
           {
             "name": "priority",
             "in": "path",
-            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without'] list",
+            "description": "'priority' - property to be filtered by\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without'] list",
             "required": true,
             "type": "string"
           },
@@ -1315,18 +1328,18 @@
             "description": "'columnId' - property to be filtered by\n\n     'columnId' - string (ObjectId)",
             "required": true,
             "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
-            "required": true,
-            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n Опис параметрів відповіді: \n\n Масив відфільтрованих об'єктів з наступними полями: \n\n     '_id' - string (ObjectId)\n\n     'title' - string\n\n     'description' - string\n\n     'priority' - string, value from ['Low', 'Medium', 'High', 'Without']\n\n     'deadline' - date\n\n     'board' - string (ObjectId)\n\n     'column' - string (ObjectId)\n\n"
+            "description": "OK\n\n   Array of filtered objects:\n\n     '_id' - string (ObjectId), task id\n\n     'title' - string, task title\n\n     'description' - string, task description\n\n     'priority' - string, value from ['low', 'medium', 'high', 'without']\n\n     'deadline' - date, ISO format\n\n     'board' - string (ObjectId),  the id of the board to which the current task belongs\n\n     'column' - string (ObjectId),  the id of the column to which the current task belongs",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetTaskByIdResponse"
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad request",
@@ -1344,6 +1357,310 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/background": {
+      "get": {
+        "tags": ["Backgrounds"],
+        "summary": "Get all background images",
+        "description": "Fetch all available background images",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of background images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/background/{id}": {
+      "get": {
+        "tags": ["Backgrounds"],
+        "summary": "Get background by ID",
+        "description": "Fetch a specific background image by its ID",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the background image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific background image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BackgroundResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/miniImages": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get all mini images",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "description": "Fetch all available mini images",
+        "responses": {
+          "200": {
+            "description": "List of mini images",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/miniImages/{id}": {
+      "get": {
+        "tags": ["Mini Background Images"],
+        "summary": "Get mini image by ID",
+        "description": "Fetch a specific mini image by its ID",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "description": "The token issued to the current user\n\n     'authorization' - Bearer Token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "ID of the mini image",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Specific mini image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MiniImageResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorBadRequestResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUnauthorizedResponse"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorNotFoundResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorServerResponse"
                 }
               }
             }
@@ -1378,6 +1695,7 @@
 
       "AuthResponse": {
         "type": "object",
+        "required": ["name", "email", "token", "avatarURL", "theme"],
         "properties": {
           "name": {
             "type": "string",
@@ -1392,20 +1710,18 @@
           "token": {
             "type": "string",
             "description": "User's token",
-            "example": "token"
+            "example": "6498c7649a32ea75e83dfa35..."
           },
           "avatarURL": {
             "type": "string",
             "description": "User's avatarURL",
             "example": "avatarURL.jpg"
+          },
+          "theme": {
+            "type": "string",
+            "description": "User's theme",
+            "example": "light"
           }
-        },
-        "required": ["name", "email", "token", "avatarURL"],
-        "example": {
-          "name": "User name",
-          "email": "example@gmail.com",
-          "token": "token",
-          "avatarURL": "avatarURL.jpg"
         }
       },
 
@@ -1433,12 +1749,12 @@
           "id": {
             "type": "string",
             "description": "User's id",
-            "example": "123456"
+            "example": "6498c7649a32ea75e83dfa35"
           },
           "name": {
             "type": "string",
             "description": "User's name",
-            "example": "User"
+            "example": "User Name"
           },
           "email": {
             "type": "string",
@@ -1450,12 +1766,16 @@
             "description": "User's img",
             "format": "URL"
           },
-
           "theme": {
             "type": "string",
             "description": "User's theme",
             "enum": ["light", "dark", "Violet"],
             "example": "light"
+          },
+          "currentBoard": {
+            "type": "string",
+            "description": "User's current board id",
+            "example": "6498c7649a32ea75e83dfa35"
           }
         }
       },
@@ -1609,11 +1929,6 @@
         "type": "object",
         "required": ["title"],
         "properties": {
-          "_id": {
-            "type": "string",
-            "description": "Board ID",
-            "example": "649716d4000e004dc6510753"
-          },
           "title": {
             "type": "string",
             "description": "Board`s title",
