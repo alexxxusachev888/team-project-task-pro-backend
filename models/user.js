@@ -40,27 +40,52 @@ const userSchema = new Schema(
 const User = model('user', userSchema);
 userSchema.post('save', handleMongooseError);
 
+const emailValidation = Joi.string()
+  .trim()
+  .lowercase()
+  .pattern(new RegExp("^[^\\.].*[^\\.]@.+\\..{3,}$"))
+  .min(3)
+  .max(254)
+  .email()
+  .required()
+  .messages(errorMessages('email'));
+
+const nameValidation = Joi.string()
+  .trim()
+  .min(2)
+  .max(100)
+  .pattern(new RegExp("^[\p{L}\s'-]+$", 'u'))
+  .required()
+  .messages(errorMessages('name'));
+
+const passwordValidation = Joi.string()
+  .min(8)
+  .max(50)
+  .required()
+  .messages(errorMessages('password'));
+
+const themeValidation = Joi.string()
+  .valid('light', 'dark', 'violet')
+  .messages(errorMessages('theme'));
+
 const registerSchema = Joi.object({
-  name: Joi.string().required().messages(errorMessages('name')),
-  email: Joi.string().required().messages(errorMessages('email')),
-  password: Joi.string().required().messages(errorMessages('password')),
+  name: nameValidation,
+  email: emailValidation,
+  password: passwordValidation,
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({
-  password: Joi.string().required().messages(errorMessages('password')),
-  email: Joi.string().required().messages(errorMessages('email')),
+  password: passwordValidation,
+  email: emailValidation,
 }).options({ abortEarly: false });
 
 const updateSchema = Joi.object({
-  name: Joi.string().min(2).max(100).messages(errorMessages('name')),
-  email: Joi.string().email().messages(errorMessages('email')),
-  password: Joi.string().min(8).max(50).messages(errorMessages('password')),
-  theme: Joi.string()
-    .valid('light', 'dark', 'violet')
-    .messages(errorMessages('theme')),
+  name: nameValidation,
+  email: emailValidation,
+  password: passwordValidation,
+  theme: themeValidation,
   avatarURL: Joi.string().uri().optional().messages(errorMessages('avatarURL')),
 }).options({ abortEarly: false });
-
 
 const schemas = {
   registerSchema,
