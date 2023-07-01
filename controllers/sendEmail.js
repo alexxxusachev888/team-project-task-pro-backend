@@ -1,7 +1,5 @@
 const nodemailer = require('nodemailer');
 
-const { User } = require('../models/user');
-
 const { ctrlWrapper, handleHttpError } = require('../helpers');
 
 const config = {
@@ -19,23 +17,16 @@ const transporter = nodemailer.createTransport(config);
 const sendEmail = async (req, res) => {
   const { email, comment } = req.body;
 
-  const user = await User.findOne({ email });
-  if (!user) throw handleHttpError(401, 'Email or password is wrong');
-
-  const mailOptions = {
+  const userEmail = {
     from: process.env.UKR_NET_EMAIL, // Ваш електронний адрес
-    to: 'vitalik.nozhenko@gmail.com', // електронний адрес кому відправляємо
+    // to: 'taskpro.project@gmail.com', // електронний адрес кому відправляємо
+    to: email, // електронний адрес кому відправляємо
     subject: 'Help',
     text: `${comment}\n\nUser email to response: ${email}`,
   };
 
-  await transporter.sendMail(mailOptions);
-  console.log('Message sent successfully');
-  res.status(200).json({
-    email: email,
-    success: true,
-    message: 'Message sent successfully',
-  });
+  await transporter.sendMail(userEmail);
+  res.status(200).json({ message: 'Message sent successfully' });
 };
 
 module.exports = {
