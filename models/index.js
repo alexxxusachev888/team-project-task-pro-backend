@@ -10,7 +10,6 @@ const { User, userSchemaJoi } = require('./user');
 const { sendEmail, sendEmailSchemaJoi } = require('./sendEmail');
 const { MiniImg, miniImgSchema } = require('./miniImages');
 const { Background, backgroundSchema } = require('./background');
-const { Session } = require('./session');
 
 module.exports = {
   Board,
@@ -31,5 +30,4 @@ module.exports = {
   miniImgSchema,
   Background,
   backgroundSchema,
-  Session,
 };

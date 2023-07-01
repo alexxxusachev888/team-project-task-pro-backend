@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { User, Session } = require("../models");
+const { User } = require("../models");
 const { handleHttpError } = require("../helpers");
 
 const authenticate = async (req, res, next) => {
@@ -11,11 +11,10 @@ const authenticate = async (req, res, next) => {
   }
 
   try {
-    const { id, sid } = jwt.verify(token, process.env.JWT_SECRET);
+    const { id } = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(id);
-    const session = await Session.findById(sid);
 
-    if (!user || !user.token || user.token !== token || !session) {
+    if (!user || !user.token || user.token !== token) {
       next(handleHttpError(401));
     }
 

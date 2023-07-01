@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const { ctrlWrapper, handleHttpError } = require('../helpers');
-const { User, Board, Session } = require('../models');
+const { User, Board } = require('../models');
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -52,14 +52,8 @@ const login = async (req, res) => {
   if (!comparePassword)
     throw handleHttpError(401, 'Email or password is wrong');
 
-    const newSession = await Session.create({ user: user._id});
-
-  const token = jwt.sign({ id: user._id, sid: newSession._id }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
     expiresIn: '24h',
-  });
-
-  const refreshToken = jwt.sign({ id: user._id, sid: newSession._id }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: '10d',
   });
 
   await User.findByIdAndUpdate(user._id, { token });
@@ -95,7 +89,6 @@ const getCurrentUser = async (req, res) => {
 const logout = async (req, res) => {
   const { _id } = req.user;
   await User.findByIdAndUpdate(_id, { token: '' });
-  await Session.findOneAndDelete({ user: _id, refreshToken: '' });
   res.status(204).json({});
 };
 
@@ -123,29 +116,6 @@ const avatarUpdate = async (req, res) => {
   res.status(200).json({ avatarURL: result.secure_url });
 };
 
-const refreshToken = async (req, res) => {
-  const { refreshToken } = req.user;
-
-  if(!refreshToken) throw handleHttpError(401, 'Not authorized');
-
-  const isRefreshTokenValid = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-  if(!isRefreshTokenValid) throw handleHttpError(401, 'Not authorized');
-
-  const { id, sid } = isRefreshTokenValid;
-  const session = await Session.findById(sid);
-  if (!session) throw handleHttpError(401, 'Session is not valid');
-
-  const token = jwt.sign({ id, sid }, process.env.JWT_SECRET, {
-    expiresIn: '24h',
-  });
-  const newRefreshToken = jwt.sign({ id, sid }, process.env.REFRESH_TOKEN_SECRET, {
-    expiresIn: '10d',
-  });
-
-  await Session.findByIdAndUpdate(sid, { refreshToken: newRefreshToken });
-  res.json({ token, refreshToken: newRefreshToken });
-};
-
 module.exports = {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
@@ -153,5 +123,4 @@ module.exports = {
   update: ctrlWrapper(update),
   avatarUpdate: ctrlWrapper(avatarUpdate),
   getCurrentUser: ctrlWrapper(getCurrentUser),
-  refreshToken: ctrlWrapper(refreshToken),
 };
