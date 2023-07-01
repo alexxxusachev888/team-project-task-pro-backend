@@ -7,12 +7,10 @@ const sendEmailSchema = new Schema(
     comment: {
       type: String,
       required: [true, 'Comment is required'],
-      unique: true,
     },
     email: {
       type: String,
       required: [true, 'Please set an email for the user.'],
-      unique: true,
     },
   },
   { versionKey: false, timestamps: true }
