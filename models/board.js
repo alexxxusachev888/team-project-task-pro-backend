@@ -7,7 +7,6 @@ const boardSchema = new Schema(
     title: {
       type: String,
       required: [true, 'Board`s title is required'],
-      unique: true,
     },
     iconId: {
       type: String,

@@ -1689,14 +1689,14 @@
           {
             "in": "body",
             "name": "Body",
-            "description": "Body description:\n\n    'email' - string, valid user`s email\n\n    'comment' - string, user`s comment",
+            "description": "Body description:\n\n    'email' - string, valid user`s email, where support should send response\n\n    'comment' - string, user`s comment",
             "required": true,
             "schema": { "$ref": "#/components/schemas/sendHelp" }
           }
         ],
         "responses": {
           "200": {
-            "description": "OK\n\n    'email' - string, user email\n\n    'message'- string, Message sent successfully",
+            "description": "OK\n\n    'message'- string, Message sent successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -1739,6 +1739,7 @@
       }
     }
   },
+
   "components": {
     "schemas": {
       "RegistrationRequest": {
@@ -2431,11 +2432,6 @@
         "type": "object",
         "required": ["email", "message"],
         "properties": {
-          "email": {
-            "type": "string",
-            "description": "User's email",
-            "format": "email"
-          },
           "message": {
             "type": "string",
             "description": "Success message",
