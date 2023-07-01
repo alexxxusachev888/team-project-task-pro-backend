@@ -42,13 +42,13 @@ userSchema.post('save', handleMongooseError);
 
 const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
-  email: Joi.string().required().messages(errorMessages('email')),
+  email: Joi.string().email().required().messages(errorMessages('email')),
   password: Joi.string().required().messages(errorMessages('password')),
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({
   password: Joi.string().required().messages(errorMessages('password')),
-  email: Joi.string().required().messages(errorMessages('email')),
+  email: Joi.string().email().required().messages(errorMessages('email')),
 }).options({ abortEarly: false });
 
 const updateSchema = Joi.object({
