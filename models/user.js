@@ -42,37 +42,19 @@ userSchema.post('save', handleMongooseError);
 
 const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
-  email: Joi.string().trim()
-  .lowercase()
-  .pattern(new RegExp("^[^\\.].*[^\\.]@.+\\..{3,}$"))
-  .max(254)
-  .email()
-  .required()
-  .messages(errorMessages('email')),
+  email: Joi.string().required().messages(errorMessages('email')),
   password: Joi.string().required().messages(errorMessages('password')),
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({
   password: Joi.string().required().messages(errorMessages('password')),
-  email: Joi.string().trim()
-  .lowercase()
-  .pattern(new RegExp("^[^\\.].*[^\\.]@.+\\..{3,}$"))
-  .max(254)
-  .email()
-  .required()
-  .messages(errorMessages('email')),
+  email: Joi.string().required().messages(errorMessages('email')),
 }).options({ abortEarly: false });
 
 const updateSchema = Joi.object({
   name: Joi.string().min(2).max(100).messages(errorMessages('name')),
   email: Joi.string().email().messages(errorMessages('email')),
-  email: Joi.string().trim()
-  .lowercase()
-  .pattern(new RegExp("^[^\\.].*[^\\.]@.+\\..{3,}$"))
-  .max(254)
-  .email()
-  .required()
-  .messages(errorMessages('email')),
+  password: Joi.string().min(8).max(50).messages(errorMessages('password')),
   theme: Joi.string()
     .valid('light', 'dark', 'violet')
     .messages(errorMessages('theme')),
