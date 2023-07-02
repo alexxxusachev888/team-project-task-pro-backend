@@ -18,14 +18,19 @@ const sendEmail = async (req, res) => {
   const { email, comment } = req.body;
 
   const userEmail = {
-    from: process.env.UKR_NET_EMAIL, // Ваш електронний адрес
-    // to: 'taskpro.project@gmail.com', // електронний адрес кому відправляємо
-    to: email, // електронний адрес кому відправляємо
+    from: process.env.UKR_NET_EMAIL,
+    to: [email, 'taskpro.project@gmail.com'],
     subject: 'Help',
-    text: `${comment}\n\nUser email to response: ${email}`,
+    text: comment,
+    replyTo: email,
   };
 
-  await transporter.sendMail(userEmail);
+  await transporter.sendMail(userEmail, (error, info) => {
+    if (error) {
+      console.log(`Email error: ${error.message}`);
+      return process.exit(1);
+    }
+  });
   res.status(200).json({ message: 'Message sent successfully' });
 };
 
