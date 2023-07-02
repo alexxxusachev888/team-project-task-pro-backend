@@ -27,8 +27,7 @@ const sendEmail = async (req, res) => {
 
   await transporter.sendMail(userEmail, (error, info) => {
     if (error) {
-      console.log(`Email error: ${error.message}`);
-      return process.exit(1);
+      throw handleHttpError(400, `Email error: ${error.message}`);
     }
   });
   res.status(200).json({ message: 'Message sent successfully' });
