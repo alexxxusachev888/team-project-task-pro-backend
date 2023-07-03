@@ -49,7 +49,7 @@ const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
   email: Joi.string().email().required().messages(errorMessages('email')),
   password: Joi.string().required().when('authMethod', { is: 'local', then: Joi.required() }),
-  authMethod: Joi.string().valid('local', 'google').required(),
+  authMethod: Joi.string().valid('local', 'google'),
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({
