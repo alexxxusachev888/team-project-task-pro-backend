@@ -123,7 +123,11 @@ const logout = async (req, res) => {
 
   await User.findByIdAndUpdate(_id, { token: '' });
 
-  await Session.findByIdAndDelete({userId: _id}); // deleting session for user
+  const sessionToDelete = await Session.findOne({userId: _id}); 
+
+  if(sessionToDelete){
+      await Session.findByIdAndDelete(sessionToDelete._id);
+  }
 
   res.status(204).json({});
 };
