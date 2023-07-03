@@ -27,6 +27,7 @@ const register = async (req, res) => {
     ...req.body,
     password: hashedPassword,
     avatarURL: '',
+    authMethod: 'local',
   });
 
   const user = await User.findOne({ email });
