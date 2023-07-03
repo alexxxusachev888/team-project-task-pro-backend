@@ -5,6 +5,9 @@ const {
   update,
   avatarUpdate,
   getCurrentUser,
+  refreshToken,
+  googleAuth,
+  googleAuthRedirect,
 } = require('./auth');
 const {
   createBoard,
@@ -41,6 +44,9 @@ module.exports = {
   update,
   avatarUpdate,
   getCurrentUser,
+  refreshToken,
+  googleAuth,
+  googleAuthRedirect,
   createBoard,
   getAllBoards,
   getBoardById,

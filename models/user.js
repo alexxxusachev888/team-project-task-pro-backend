@@ -15,7 +15,7 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: [true, 'Please set a password for the user'],
+      required: function() { return this.authMethod === 'local'; }, 
     },
     theme: {
       type: String,
@@ -33,6 +33,11 @@ const userSchema = new Schema(
       type: String,
       default: '',
     },
+    authMethod: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local'
+    },
   },
   { versionKey: false, timestamps: true }
 );
@@ -43,7 +48,8 @@ userSchema.post('save', handleMongooseError);
 const registerSchema = Joi.object({
   name: Joi.string().required().messages(errorMessages('name')),
   email: Joi.string().email().required().messages(errorMessages('email')),
-  password: Joi.string().required().messages(errorMessages('password')),
+  password: Joi.string().required().when('authMethod', { is: 'local', then: Joi.required() }),
+  authMethod: Joi.string().valid('local', 'google').required(),
 }).options({ abortEarly: false });
 
 const loginSchema = Joi.object({
